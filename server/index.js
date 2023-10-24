@@ -7,6 +7,8 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const { homeRouter } = require("../server-express/home");
+const { authRouter } = require("../server-express/routes/auth.routes");
+const { checkAuth } = require("../server-express/controllers/auth.controller");
 
 function connectToDB(cb) {
   mongoose
@@ -26,6 +28,10 @@ app
   .then(() => {
     connectToDB(() => {
       const server = express();
+
+      server.use("/auth", authRouter);
+
+      // server.use("/", checkAuth);
 
       server.get("/api", (req, res) => {
         console.log("Hi");

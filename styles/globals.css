@@ -1,3 +1,53 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .authFormBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dbdbdb;
+    width: 348px;
+    padding: 10px 40px;
+    margin-bottom: 10px;
+  }
+  .secondaryText {
+    color: #737373;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+  }
+  .authInput {
+    width: 268px;
+    height: 36px;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    background-color: rgb(250, 250, 250);
+    font-size: 14px;
+    padding: 9px 8px;
+  }
+  .authInput:focus-visible {
+    outline: none;
+    border-color: black;
+  }
+  .signBtn {
+    width: 100%;
+    height: 36px;
+    background-color: #0095f6;
+    color: white;
+    font-size: 14px;
+    border-radius: 6px;
+  }
+  .authSwitchBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dbdbdb;
+    width: 348px;
+    padding: 25px 0px;
+    margin-bottom: 10px;
+  }
+}
