@@ -3,8 +3,10 @@ import { barOptions } from "../../constants/barOptions";
 import Link from "next/link";
 import Image from "next/image";
 import { InstaTextIcon } from "../../icons/instaTextIcon";
+import { useRouter } from "next/router";
 
 export default function SideBar() {
+  const router = useRouter();
   return (
     <div className="hidden md:flex items-start flex-col w-[72px] lg:w-[244px] h-[100vh] border-r-2 border-gray-700 px-3 py-2">
       <div className="w-full h-[92px]">
@@ -30,6 +32,14 @@ export default function SideBar() {
           </Link>
         ))}
       </div>
+      <button
+        onClick={() => {
+          localStorage.clear();
+          router.push("/signIn");
+        }}
+      >
+        <Image src="/assets/logout.svg" alt="logout" width={24} height={24} />
+      </button>
     </div>
   );
 }

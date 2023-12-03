@@ -17,7 +17,6 @@ const postSchema = new mongoose.Schema({
   ],
   createdBy: {
     type: mongoose.SchemaTypes.ObjectId,
-    ref: User,
   },
   createdAt: {
     type: Date,
@@ -25,4 +24,5 @@ const postSchema = new mongoose.Schema({
   },
 });
 
-export const Post = new mongoose.Schema("Post", postSchema);
+const Post = new mongoose.model("Post", postSchema) || mongoose.models.posts;
+module.exports = { Post };

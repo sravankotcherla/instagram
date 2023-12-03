@@ -1,10 +1,19 @@
+import { useRouter } from "next/router";
+import { useState } from "react";
 import { signUpFormFields } from "../../../constants/signUpFormFields";
 import { InstaTextIcon } from "../../../icons/instaTextIcon";
+import { AuthServices } from "../../../services/AuthServices";
 import { AuthForm } from "../../forms/authForm";
 
 export const SignUp = () => {
-  const onSignUp = (userDetails: { [key: string]: string }) => {
-    console.log(userDetails);
+  const router = useRouter();
+  const onSignUp = async (userDetails: { [key: string]: string }) => {
+    try {
+      await AuthServices.signUp(userDetails);
+      router.push("/signIn");
+    } catch (err: any) {
+      console.log(err);
+    }
   };
 
   return (

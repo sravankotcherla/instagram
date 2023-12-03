@@ -23,9 +23,9 @@ export const signUpFormFields = [
 
 export const signInFormFields = [
   {
-    id: "Username",
+    id: "Email",
     label: "Username or Email",
-    value: "username",
+    value: "email",
   },
   {
     id: "Password",

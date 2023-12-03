@@ -1,6 +1,5 @@
-import { Post } from "./posts.model";
-
 const mongoose = require("mongoose");
+const { Post } = require("./posts.model.js");
 
 const userSchema = new mongoose.Schema({
   id: {
@@ -17,7 +16,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
   },
   email: {
     type: String,
@@ -42,5 +40,5 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-export const User =
-  new mongoose.model("User", userSchema) || mongoose.models.users;
+const User = new mongoose.model("User", userSchema) || mongoose.models.users;
+module.exports = { User };

@@ -1,13 +1,9 @@
 import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
-import TopBar from "../components/shared/topBar";
-import SideBar from "../components/shared/sideBar";
-import BottomBar from "../components/shared/bottomBar";
+import { authenticator } from "../components/hoc/authenticator";
+import { HomePosts } from "../components/home";
 
-const Home: NextPage = () => {
-  return <p className="text-white">Home</p>;
-};
+const Home: NextPage = authenticator(() => {
+  return <HomePosts />;
+});
 
 export default Home;
