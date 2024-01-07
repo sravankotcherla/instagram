@@ -9,12 +9,9 @@ exports.signInUser = async (req, res) => {
     const authToken = req.headers.authorization.split(" ")[1];
     let user = {};
     if (email && password) {
-      user = await User.findOne(
-        {
-          $or: [{ email: email }, { username: email }],
-        },
-        { bio: -1, posts: -1, followers: -1 }
-      );
+      user = await User.findOne({
+        $or: [{ email: email }, { username: email }],
+      });
       if (!user) {
         return res.status(401).send("Invalid username/email");
       }
@@ -24,14 +21,12 @@ exports.signInUser = async (req, res) => {
       }
     } else if (authToken) {
       const decodedToken = jwt.verify(authToken, process.env.JWT_SECRET_KEY);
-      user = await User.findOne(
-        {
-          email: decodedToken.email,
-          id: decodedToken.id,
-          username: decodedToken.username,
-        },
-        { bio: -1, posts: -1, followers: -1 }
-      );
+      user = await User.findOne({
+        email: decodedToken.email,
+        id: decodedToken.id,
+        username: decodedToken.username,
+      });
+      console.log(user, decodedToken);
     } else {
       return res
         .status(401)
@@ -48,7 +43,7 @@ exports.signInUser = async (req, res) => {
     });
     return res.jsonp({
       token: jwtToken,
-      user: lodash.omit(user, ["password"]),
+      user: lodash.omit(user, ["password", "bio", "posts", "followers"]),
     });
   } catch (err) {
     return res.status(500).send(err);
