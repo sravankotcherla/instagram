@@ -1,4 +1,5 @@
 import { Action } from "redux";
+import { GenderOption } from "../../components/pages/profile/edit-profile";
 import { ApplicationState } from "../store";
 import { SET_USER_LOGIN_INFO, UPDATE_JWT_TOKEN } from "../types/Auth.types";
 
@@ -8,6 +9,10 @@ export interface UserLoginInfo {
   username: string;
   profileImg: string;
   email: string;
+  bio: string;
+  followers: number;
+  posts: any;
+  gender?: GenderOption;
 }
 
 export interface AuthReducerState {

@@ -10,6 +10,7 @@ const bodyParser = require("body-parser");
 const { homeRouter } = require("../server-express/home");
 const { authRouter } = require("../server-express/routes/auth.routes");
 const { checkAuth } = require("../server-express/controllers/auth.controller");
+const { profileRouter } = require("../server-express/routes/profile.routes");
 
 function connectToDB(cb) {
   mongoose
@@ -36,6 +37,7 @@ app
       server.use("/auth", authRouter);
 
       server.use("/api", checkAuth);
+      server.use("/api/profile", profileRouter);
 
       server.get("/api", (req, res) => {
         console.log("Api is working");

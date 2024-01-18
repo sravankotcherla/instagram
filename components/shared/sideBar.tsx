@@ -4,9 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { InstaTextIcon } from "../../icons/instaTextIcon";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { ApplicationState } from "../../redux/store";
 
 export default function SideBar() {
   const router = useRouter();
+  const userSessionInfo = useSelector(
+    (state: ApplicationState) => state.auth.user
+  );
   return (
     <div className="hidden md:flex items-start flex-col w-[72px] lg:w-[244px] h-[100vh] border-r-2 border-gray-700 px-3 py-2">
       <div className="w-full h-[92px]">
@@ -19,7 +24,14 @@ export default function SideBar() {
       </div>
       <div className="flex flex-col gap-4 w-full ">
         {barOptions.map((option) => (
-          <Link href={option.route} key={option.label}>
+          <Link
+            href={
+              option.label === "Profile"
+                ? `${option.route}/${userSessionInfo?.username || ""}`
+                : option.route
+            }
+            key={option.label}
+          >
             <div className="flex flex-row items-center justify-start w-full p-3 my-2 h-[48px] text-base">
               <Image
                 src={option.imgURL}

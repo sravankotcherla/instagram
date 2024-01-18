@@ -28,6 +28,12 @@ const userSchema = new mongoose.Schema({
   profileImg: {
     type: String,
   },
+  gender: {
+    type: {
+      value: String,
+      type: String,
+    },
+  },
   posts: [
     {
       type: mongoose.SchemaTypes.ObjectId,

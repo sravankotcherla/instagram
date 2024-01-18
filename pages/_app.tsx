@@ -25,7 +25,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     );
   }
   return (
-    <main className="bg-black h-[100vh]">
+    <main className="bg-black h-[100vh] text-white">
       <GoogleOAuthProvider
         clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
       >

@@ -26,7 +26,6 @@ exports.signInUser = async (req, res) => {
         id: decodedToken.id,
         username: decodedToken.username,
       });
-      console.log(user, decodedToken);
     } else {
       return res
         .status(401)
@@ -43,7 +42,7 @@ exports.signInUser = async (req, res) => {
     });
     return res.jsonp({
       token: jwtToken,
-      user: lodash.omit(user, ["password", "bio", "posts", "followers"]),
+      user: lodash.omit(user, ["password"]),
     });
   } catch (err) {
     return res.status(500).send(err);
@@ -82,6 +81,11 @@ exports.checkAuth = async (req, res, next) => {
         console.log(err);
         return res.status(401).send("Invalid authorization token");
       } else {
+        req.user = {
+          id: result.id,
+          username: result.username,
+          email: result.username,
+        };
         next();
       }
     });
@@ -114,7 +118,7 @@ exports.singleSignIn = async (req, res, next) => {
     });
     return res.jsonp({
       token: jwtToken,
-      user: lodash.omit(userData, ["password", "bio", "posts", "followers"]),
+      user: lodash.omit(userData, ["password"]),
       newUser,
     });
   } catch (err) {

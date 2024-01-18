@@ -2,6 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .text-primary {
+    color: rgb(138, 138, 138);
+  }
+  .text-secondary {
+    color: rgb(168, 168, 168);
+  }
+  .primaryButton {
+    display: flex;
+    align-items: center;
+    background-color: #363636;
+    border-radius: 8px;
+    color: white;
+    padding: 0px 16px;
+    height: 32px;
+    cursor: pointer;
+  }
+  .primaryButton:hover {
+    background-color: rgb(38, 38, 38);
+  }
+  .secondaryButton {
+    display: flex;
+    align-items: center;
+    background-color: rgb(0, 149, 246);
+    border-radius: 8px;
+    color: white;
+    padding: 0px 16px;
+    height: 32px;
+    cursor: pointer;
+  }
+  .secondaryButton:hover {
+    background-color: rgb(24, 119, 242);
+  }
+  .inputPrimary {
+    border-radius: 8px;
+    border: 1.5px solid rgb(50, 53, 57);
+    padding: 10px 16px;
+    background-color: black;
+    color: white;
+    resize: none;
+  }
+  .tertiaryBtn {
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgb(38, 38, 38);
+  }
+}
+
 @layer components {
   .singleSignInBtn {
     border: 1px solid rgb(218, 220, 224);
@@ -55,5 +103,45 @@
     width: 348px;
     padding: 25px 0px;
     margin-bottom: 10px;
+  }
+  .profileImageDiv {
+    flex-basis: 300px;
+    justify-content: center;
+  }
+  .tabsHeader {
+    height: 52px;
+    border-top: 1px solid grey;
+  }
+  .activeTab {
+    color: white !important;
+    border-top: 2px solid white;
+  }
+  .changePhotoDiv {
+    background-color: rgb(38, 38, 38);
+    border-radius: 16px;
+  }
+  .bioTextArea {
+    padding-right: 80px !important;
+    height: 60px;
+  }
+  .bioWordCount {
+    position: relative;
+  }
+  .profileImgStyle {
+    border-radius: 50%;
+  }
+  .popperClass {
+    background-color: rgb(38, 38, 38);
+    color: white;
+    width: 366;
+    border-radius: 12px;
+    padding: 10px 0px;
+  }
+  .popperSelectionItems {
+    padding: 16px 24px;
+    width: 366px;
+  }
+  .checkbox {
+    padding: 0px !important;
   }
 }
