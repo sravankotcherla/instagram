@@ -22,6 +22,7 @@ export const Profile = (props: ProfileProps) => {
             width={150}
             height={150}
             alt="profile image"
+            className="roundedToCircle"
           />
         </div>
         <div className="flex flex-col flex-grow">

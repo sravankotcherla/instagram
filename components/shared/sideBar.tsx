@@ -32,12 +32,17 @@ export default function SideBar() {
             }
             key={option.label}
           >
-            <div className="flex flex-row items-center justify-start w-full p-3 my-2 h-[48px] text-base">
+            <div className="flex flex-row items-center justify-start w-full p-3 my-2 h-[48px] text-base cursor-pointer">
               <Image
-                src={option.imgURL}
+                src={
+                  option.label === "Profile" && userSessionInfo?.profileImg
+                    ? userSessionInfo?.profileImg
+                    : option.imgURL
+                }
                 alt={option.label}
                 width={24}
                 height={24}
+                className="roundedToCircle"
               />
               <p className="hidden ml-4 text-white lg:flex">{option.label}</p>
             </div>
@@ -49,6 +54,7 @@ export default function SideBar() {
           localStorage.clear();
           router.push("/signIn");
         }}
+        className="mt-auto mx-auto mb-8"
       >
         <Image src="/assets/logout.svg" alt="logout" width={24} height={24} />
       </button>

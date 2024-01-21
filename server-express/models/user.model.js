@@ -1,6 +1,15 @@
 const mongoose = require("mongoose");
 const { Post } = require("./posts.model.js");
 
+const GenderTypeSchema = new mongoose.Schema({
+  value: {
+    type: String,
+  },
+  type: {
+    type: String,
+  },
+});
+
 const userSchema = new mongoose.Schema({
   id: {
     type: String,
@@ -28,12 +37,7 @@ const userSchema = new mongoose.Schema({
   profileImg: {
     type: String,
   },
-  gender: {
-    type: {
-      value: String,
-      type: String,
-    },
-  },
+  gender: GenderTypeSchema,
   posts: [
     {
       type: mongoose.SchemaTypes.ObjectId,

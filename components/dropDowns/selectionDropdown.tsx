@@ -38,6 +38,7 @@ const SelectionDropdown = (props: DropdownProps) => {
         value: selectedOption.value,
         type: selectedOption.type,
       });
+    setAnchorEl(null);
   };
 
   return (
@@ -65,6 +66,7 @@ const SelectionDropdown = (props: DropdownProps) => {
                 <div
                   className="flex flex-row items-center justify-between popperSelectionItems cursor-pointer"
                   onClick={handleChange}
+                  key={option.id}
                 >
                   <span>{option.value}</span>
                   <Checkbox
@@ -110,6 +112,7 @@ const SelectionDropdown = (props: DropdownProps) => {
                   <div className="px-6 pb-3">
                     <textarea
                       onChange={(event) => {
+                        debugger;
                         setSelected(event.currentTarget.value);
                         onOptionChange({
                           value: event.currentTarget.value,

@@ -32,17 +32,10 @@ export const EditProfile = () => {
     userInfo?.gender || undefined
   );
 
-  const updatedProfile = (payload: ProfileServicePayload) => {
-    ProfileService.UpdateProfile(payload)
-      .then((res) => {
-        if (userInfo) {
-          const updatedUserInfo = { ...userInfo, ...payload };
-          dispatch(setUserLoginInfo(updatedUserInfo));
-        }
-      })
-      .catch((err) => {
-        console.log("Failed to update Profile", err);
-      });
+  const updatedProfile = async (payload: ProfileServicePayload) => {
+    const resp = await ProfileService.UpdateProfile(payload);
+    const updatedUserInfo = { ...userInfo, ...payload };
+    dispatch(setUserLoginInfo(updatedUserInfo));
   };
 
   const onProfilePicUpload = (event: any) => {

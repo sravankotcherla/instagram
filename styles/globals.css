@@ -48,6 +48,9 @@
     padding: 16px;
     border: 1px solid rgb(38, 38, 38);
   }
+  .roundedToCircle {
+    border-radius: 50%;
+  }
 }
 
 @layer components {
