@@ -23,7 +23,7 @@
     background-color: rgb(38, 38, 38);
   }
   .secondaryButton {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     background-color: rgb(0, 149, 246);
     border-radius: 8px;
@@ -31,6 +31,7 @@
     padding: 0px 16px;
     height: 32px;
     cursor: pointer;
+    font-size: 14px;
   }
   .secondaryButton:hover {
     background-color: rgb(24, 119, 242);
@@ -42,6 +43,18 @@
     background-color: black;
     color: white;
     resize: none;
+  }
+  .inputPrimary:focus-visible {
+    outline: none;
+  }
+  .inputTertiary {
+    background-color: transparent;
+    color: white;
+    height: 200px;
+    width: 100%;
+  }
+  .inputTertiary:focus-visible {
+    outline: none;
   }
   .tertiaryBtn {
     border-radius: 12px;
@@ -146,5 +159,29 @@
   }
   .checkbox {
     padding: 0px !important;
+  }
+  .postModal {
+    border-radius: 12px;
+    background-color: rgb(38, 38, 38);
+    color: white;
+    resize: none;
+  }
+  .postModal:focus-visible {
+    outline: none;
+  }
+  .postModalHeading {
+    height: 43px;
+    border-bottom: 1px solid black;
+  }
+  .postModalDescription {
+    height: 560px;
+  }
+  .postDetails {
+    width: 560px;
+    width: 340px;
+  }
+  .captionInput {
+    padding: 16px;
+    border-bottom: 1px solid black;
   }
 }

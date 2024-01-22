@@ -7,10 +7,10 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 const bodyParser = require("body-parser");
 
-const { homeRouter } = require("../server-express/home");
 const { authRouter } = require("../server-express/routes/auth.routes");
 const { checkAuth } = require("../server-express/controllers/auth.controller");
 const { profileRouter } = require("../server-express/routes/profile.routes");
+const { postRouter } = require("../server-express/routes/post.routes");
 
 function connectToDB(cb) {
   mongoose
@@ -31,13 +31,14 @@ app
     connectToDB(() => {
       const server = express();
 
-      server.use(bodyParser.json()); // for parsing application/json
-      server.use(bodyParser.urlencoded({ extended: true }));
+      server.use(bodyParser.json({ limit: "100mb" })); // for parsing application/json
+      server.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 
       server.use("/auth", authRouter);
 
       server.use("/api", checkAuth);
       server.use("/api/profile", profileRouter);
+      server.use("/api/post", postRouter);
 
       server.get("/api", (req, res) => {
         console.log("Api is working");

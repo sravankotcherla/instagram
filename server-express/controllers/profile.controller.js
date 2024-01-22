@@ -9,7 +9,6 @@ exports.updateProfile = async (req, res) => {
       { $set: payload },
       { returnDocument: "after" }
     );
-    console.log(updatedUser);
     return res.status(200).jsonp(updatedUser);
   } catch (err) {
     return res.status(400).jsonp({

@@ -2,6 +2,7 @@ export interface IconProps {
   width?: number;
   height?: number;
   customColor?: string;
+  customClass?: string;
 }
 export const ChevronDownIcon = (props: IconProps) => {
   const { customColor } = props;

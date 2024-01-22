@@ -1,4 +1,10 @@
-export const barOptions = [
+export interface barOptionInterface {
+  imgURL: string;
+  route?: string;
+  label: string;
+  onClick?: () => void;
+}
+export const barOptions: barOptionInterface[] = [
   {
     imgURL: "/assets/home.svg",
     route: "/",
@@ -16,7 +22,6 @@ export const barOptions = [
   },
   {
     imgURL: "/assets/create.svg",
-    route: "/create",
     label: "Create",
   },
   {

@@ -81,12 +81,21 @@ exports.checkAuth = async (req, res, next) => {
         console.log(err);
         return res.status(401).send("Invalid authorization token");
       } else {
-        req.user = {
-          id: result.id,
-          username: result.username,
-          email: result.username,
-        };
-        next();
+        User.findOne(
+          { id: result.id, email: result.email, username: result.username },
+          { posts: 0, password: 0 }
+        )
+          .then((userInfo) => {
+            console.log(userInfo);
+            req.user = userInfo;
+            next();
+          })
+          .catch((err) => {
+            return res.status(401).send({
+              error: err,
+              message: "Couldn't find user from jwt token details",
+            });
+          });
       }
     });
   }

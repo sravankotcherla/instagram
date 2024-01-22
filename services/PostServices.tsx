@@ -13,8 +13,16 @@ export const axiosInstance = axios.create({
     Authorization: `Bearer ${getJwtToken()}`,
   },
 });
+export interface CreatePostPayload {
+  img: string;
+  tags: string[] | [];
+  content: string;
+}
 export const PostServices = {
   fetchPosts() {
     return axiosInstance.get("/api");
+  },
+  createPost(payload: CreatePostPayload) {
+    return axiosInstance.put("/api/post", payload);
   },
 };

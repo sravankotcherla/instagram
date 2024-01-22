@@ -1,14 +1,16 @@
 import { InstaLogo } from "../../icons/InstaLogo";
-import { barOptions } from "../../constants/barOptions";
-import Link from "next/link";
+import { barOptionInterface } from "../../constants/barOptions";
 import Image from "next/image";
 import { InstaTextIcon } from "../../icons/instaTextIcon";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../redux/store";
+import { CreatePostActions } from "../../redux/actions/CreatePost.actions";
 
-export default function SideBar() {
+export default function SideBar(props: { options: barOptionInterface[] }) {
+  const { options } = props;
   const router = useRouter();
+  const dispatch = useDispatch();
   const userSessionInfo = useSelector(
     (state: ApplicationState) => state.auth.user
   );
@@ -23,30 +25,25 @@ export default function SideBar() {
         </div>
       </div>
       <div className="flex flex-col gap-4 w-full ">
-        {barOptions.map((option) => (
-          <Link
-            href={
-              option.label === "Profile"
-                ? `${option.route}/${userSessionInfo?.username || ""}`
-                : option.route
-            }
+        {options.map((option) => (
+          <div
             key={option.label}
+            className="flex flex-row items-center justify-start w-full p-3 my-2 h-[48px] text-base cursor-pointer"
+            onClick={option.onClick}
           >
-            <div className="flex flex-row items-center justify-start w-full p-3 my-2 h-[48px] text-base cursor-pointer">
-              <Image
-                src={
-                  option.label === "Profile" && userSessionInfo?.profileImg
-                    ? userSessionInfo?.profileImg
-                    : option.imgURL
-                }
-                alt={option.label}
-                width={24}
-                height={24}
-                className="roundedToCircle"
-              />
-              <p className="hidden ml-4 text-white lg:flex">{option.label}</p>
-            </div>
-          </Link>
+            <Image
+              src={
+                option.label === "Profile" && userSessionInfo?.profileImg
+                  ? userSessionInfo?.profileImg
+                  : option.imgURL
+              }
+              alt={option.label}
+              width={24}
+              height={24}
+              className="roundedToCircle"
+            />
+            <p className="hidden ml-4 text-white lg:flex">{option.label}</p>
+          </div>
         ))}
       </div>
       <button

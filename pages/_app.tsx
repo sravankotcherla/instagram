@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { Provider } from "react-redux";
 import { store } from "../redux/store";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { MenuBarWrapper } from "../components/wrapper/menu-bar-wrapper";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -30,12 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
       >
         <Provider store={store}>
-          <TopBar />
-          <div className="flex flex-row">
-            <SideBar />
-            <Component {...pageProps} />
-          </div>
-          <BottomBar />
+          <MenuBarWrapper>{<Component {...pageProps} />}</MenuBarWrapper>
         </Provider>
       </GoogleOAuthProvider>
     </main>
