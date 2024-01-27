@@ -1,28 +1,19 @@
 import axios from "axios";
 
-export const getJwtToken = () => {
-  if (typeof window !== "undefined") {
-    console.log(localStorage.getItem("jwtToken"));
-    return localStorage.getItem("jwtToken");
-  }
-  return "";
-};
 export const axiosInstance = axios.create({
   baseURL: "http://localhost:3000/",
-  headers: {
-    Authorization: `Bearer ${getJwtToken()}`,
-  },
 });
 export interface CreatePostPayload {
   img: string;
   tags: string[] | [];
   content: string;
 }
+
 export const PostServices = {
-  fetchPosts() {
-    return axiosInstance.get("/api");
+  fetchPosts(skip: number = 0) {
+    return axiosInstance.get("/api/posts", { params: { skip: skip } });
   },
   createPost(payload: CreatePostPayload) {
-    return axiosInstance.put("/api/post", payload);
+    return axiosInstance.put("/api/posts", payload);
   },
 };

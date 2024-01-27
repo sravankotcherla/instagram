@@ -15,3 +15,16 @@ exports.createPost = async (req, res) => {
     res.status(400).jsonp({ message: "Failed to create post", error: err });
   }
 };
+
+exports.fetchPosts = async (req, res) => {
+  try {
+    console.log("hi", req.query.skip);
+    const skipNumber = req?.query?.skip || 0;
+    const posts = await Post.find({ createdBy: req.user._id }).skip(skipNumber);
+    return res.status(200).jsonp(posts);
+  } catch (err) {
+    return res
+      .status(400)
+      .send({ message: "Failed to fetch posts", error: err });
+  }
+};

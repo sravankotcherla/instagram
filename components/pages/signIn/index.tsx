@@ -6,10 +6,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { signInFormFields } from "../../../constants/signUpFormFields";
 import { InstaTextIcon } from "../../../icons/instaTextIcon";
-import {
-  setUserLoginInfo,
-  UpdateAuthToken,
-} from "../../../redux/actions/Auth.actions";
+import { setUserLoginInfo } from "../../../redux/actions/Auth.actions";
 import { AuthServices } from "../../../services/AuthServices";
 import { AuthForm } from "../../forms/authForm";
 import Image from "next/image";
@@ -40,9 +37,7 @@ export const SignIn = () => {
         profile_picture: data.picture,
       };
       const response = await AuthServices.singleSignIn(user);
-      console.log(resp, response);
-      dispatch(UpdateAuthToken(response.data.token));
-      dispatch(setUserLoginInfo(response.data.user));
+      dispatch(setUserLoginInfo(response.data));
       if (!response.data.newUser) {
         router.push("/");
       } else {
@@ -58,7 +53,6 @@ export const SignIn = () => {
     try {
       const { email, password } = userDetails;
       const resp = await AuthServices.signIn({ email, password });
-      dispatch(UpdateAuthToken(resp.data.token));
       dispatch(setUserLoginInfo(resp.data.user));
       router.push("/");
     } catch (err: any) {

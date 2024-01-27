@@ -1,11 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setUserLoginInfo,
-  UpdateAuthToken,
-} from "../../redux/actions/Auth.actions";
-import { authTokenSelector } from "../../redux/reducers/AuthReducer";
+import { setUserLoginInfo } from "../../redux/actions/Auth.actions";
+import { userLoginInfo } from "../../redux/reducers/AuthReducer";
 import { AuthServices } from "../../services/AuthServices";
 
 export const authenticator = (WrappedComponent: any) => {
@@ -13,13 +10,12 @@ export const authenticator = (WrappedComponent: any) => {
     const router = useRouter();
     const dispatch = useDispatch();
 
-    const sessionToken = useSelector(authTokenSelector);
+    const session = useSelector(userLoginInfo);
 
     useEffect(() => {
-      if (!sessionToken) {
+      if (!session) {
         AuthServices.signIn({ email: null, password: null })
           .then((resp) => {
-            dispatch(UpdateAuthToken(resp.data.token));
             dispatch(setUserLoginInfo(resp.data.user));
           })
           .catch((err) => {
@@ -29,7 +25,7 @@ export const authenticator = (WrappedComponent: any) => {
       }
     }, []);
 
-    if (sessionToken) {
+    if (session) {
       return WrappedComponent();
     }
 

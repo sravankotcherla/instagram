@@ -6,6 +6,7 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 const { authRouter } = require("../server-express/routes/auth.routes");
 const { checkAuth } = require("../server-express/controllers/auth.controller");
@@ -33,12 +34,13 @@ app
 
       server.use(bodyParser.json({ limit: "100mb" })); // for parsing application/json
       server.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
+      server.use(cookieParser());
 
       server.use("/auth", authRouter);
 
       server.use("/api", checkAuth);
       server.use("/api/profile", profileRouter);
-      server.use("/api/post", postRouter);
+      server.use("/api/posts", postRouter);
 
       server.get("/api", (req, res) => {
         console.log("Api is working");

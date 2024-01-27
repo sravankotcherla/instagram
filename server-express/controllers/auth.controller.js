@@ -6,7 +6,7 @@ const lodash = require("lodash");
 exports.signInUser = async (req, res) => {
   try {
     let { email, password } = req.query;
-    const authToken = req.headers.authorization.split(" ")[1];
+    const authToken = req.cookies.sessionToken;
     let user = {};
     if (email && password) {
       user = await User.findOne({
@@ -40,10 +40,12 @@ exports.signInUser = async (req, res) => {
     const jwtToken = jwt.sign(jwtPayload, process.env.JWT_SECRET_KEY, {
       expiresIn: "1hr",
     });
-    return res.jsonp({
-      token: jwtToken,
-      user: lodash.omit(user, ["password"]),
-    });
+    return res
+      .cookie("sessionToken", jwtToken, {
+        maxAge: 3600000,
+        httpOnly: true,
+      })
+      .jsonp(lodash.omit(user, ["password"]));
   } catch (err) {
     return res.status(500).send(err);
   }
@@ -72,10 +74,12 @@ exports.signUpUser = async (req, res) => {
 };
 
 exports.checkAuth = async (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
+  const token = req.cookies.sessionToken;
   if (!token) {
+    console.log("misssing", req.cookies, req.headers);
     return res.status(401).send("JWT token is missing");
   } else {
+    console.log("found", req.headers);
     jwt.verify(token, process.env.JWT_SECRET_KEY, function (err, result) {
       if (err || !result) {
         console.log(err);
@@ -86,7 +90,6 @@ exports.checkAuth = async (req, res, next) => {
           { posts: 0, password: 0 }
         )
           .then((userInfo) => {
-            console.log(userInfo);
             req.user = userInfo;
             next();
           })
@@ -125,11 +128,12 @@ exports.singleSignIn = async (req, res, next) => {
     const jwtToken = jwt.sign(jwtPayload, process.env.JWT_SECRET_KEY, {
       expiresIn: "1hr",
     });
-    return res.jsonp({
-      token: jwtToken,
-      user: lodash.omit(userData, ["password"]),
-      newUser,
-    });
+    return res
+      .cookie("sessionToken", jwtToken, {
+        maxAge: 3600000,
+        httpOnly: true,
+      })
+      .jsonp(lodash.omit(userData, ["password"]));
   } catch (err) {
     console.log(err);
     return res.status(500).send("err");
