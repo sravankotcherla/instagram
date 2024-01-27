@@ -1,6 +1,3 @@
-import BottomBar from "../components/shared/bottomBar";
-import SideBar from "../components/shared/sideBar";
-import TopBar from "../components/shared/topBar";
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";

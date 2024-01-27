@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { User } = require("./user.model");
 
 const postSchema = new mongoose.Schema({
   content: {
@@ -12,7 +11,6 @@ const postSchema = new mongoose.Schema({
   tags: [
     {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: User,
     },
   ],
   likes: {

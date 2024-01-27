@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Post } = require("./posts.model.js");
+const { Post } = require("./posts.model");
 
 const GenderTypeSchema = new mongoose.Schema({
   value: {

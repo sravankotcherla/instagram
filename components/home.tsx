@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { PostServices } from "../services/PostServices";
+import { PostCard } from "./posts/post-card";
 
-export interface Post {
+export interface PostDetails {
   _id: string;
   createdBy: string;
   createdAt: string;
@@ -11,22 +12,21 @@ export interface Post {
   likes: number;
 }
 export interface HomeProps {
-  posts: Post;
+  posts: any;
 }
 export const HomePosts = (props: HomeProps) => {
   const { posts } = props;
 
-  console.log(posts);
-  useEffect(() => {
-    PostServices.fetchPosts(0)
-      .then((resp) => {
-        setPostsList(resp.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-  const [postsList, setPostsList] = useState<any>(posts);
+  const [postsList, setPostsList] = useState<PostDetails[]>(posts);
 
-  return <p className="text-white">Home</p>;
+  return (
+    <div>
+      <span>Home</span>
+      <div className="text-white">
+        {postsList.map((postItem) => {
+          return <PostCard key={postItem._id} postDetails={postItem} />;
+        })}
+      </div>
+    </div>
+  );
 };

@@ -18,9 +18,10 @@ exports.createPost = async (req, res) => {
 
 exports.fetchPosts = async (req, res) => {
   try {
-    console.log("hi", req.query.skip);
     const skipNumber = req?.query?.skip || 0;
-    const posts = await Post.find({ createdBy: req.user._id }).skip(skipNumber);
+    const posts = await Post.find({ createdBy: req.user._id })
+      .skip(skipNumber)
+      .limit(5);
     return res.status(200).jsonp(posts);
   } catch (err) {
     return res

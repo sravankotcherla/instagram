@@ -42,11 +42,6 @@ app
       server.use("/api/profile", profileRouter);
       server.use("/api/posts", postRouter);
 
-      server.get("/api", (req, res) => {
-        console.log("Api is working");
-        res.send([]);
-      });
-
       server.get("*", (req, res) => {
         return handle(req, res);
       });

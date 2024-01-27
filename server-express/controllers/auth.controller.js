@@ -21,11 +21,16 @@ exports.signInUser = async (req, res) => {
       }
     } else if (authToken) {
       const decodedToken = jwt.verify(authToken, process.env.JWT_SECRET_KEY);
+
       user = await User.findOne({
         email: decodedToken.email,
-        id: decodedToken.id,
         username: decodedToken.username,
       });
+      if (!user) {
+        console.log("Improper jwt token from cookie");
+        return res.status(401).send("Improper jwt token from cookie");
+      }
+      return res.jsonp(lodash.omit(user, ["password"]));
     } else {
       return res
         .status(401)
@@ -79,7 +84,6 @@ exports.checkAuth = async (req, res, next) => {
     console.log("misssing", req.cookies, req.headers);
     return res.status(401).send("JWT token is missing");
   } else {
-    console.log("found", req.headers);
     jwt.verify(token, process.env.JWT_SECRET_KEY, function (err, result) {
       if (err || !result) {
         console.log(err);

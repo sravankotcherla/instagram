@@ -112,7 +112,6 @@ const SelectionDropdown = (props: DropdownProps) => {
                   <div className="px-6 pb-3">
                     <textarea
                       onChange={(event) => {
-                        debugger;
                         setSelected(event.currentTarget.value);
                         onOptionChange({
                           value: event.currentTarget.value,
