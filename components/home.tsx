@@ -20,13 +20,10 @@ export const HomePosts = (props: HomeProps) => {
   const [postsList, setPostsList] = useState<PostDetails[]>(posts);
 
   return (
-    <div>
-      <span>Home</span>
-      <div className="text-white">
-        {postsList.map((postItem) => {
-          return <PostCard key={postItem._id} postDetails={postItem} />;
-        })}
-      </div>
+    <div className="text-white flex flex-col w-full h-full items-center pt-5 overflow-scroll">
+      {postsList.map((postItem) => {
+        return <PostCard key={postItem._id} postDetails={postItem} />;
+      })}
     </div>
   );
 };

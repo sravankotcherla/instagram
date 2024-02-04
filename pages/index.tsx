@@ -18,14 +18,24 @@ export const getServerSideProps = async (
     request.headers.host = context.req.headers.host;
     return request;
   });
-  const resp = await PostServices.fetchPosts();
-  axiosInstance.interceptors.request.eject(interceptor);
-  return { props: { posts: resp.data } };
+  try {
+    const resp = await PostServices.fetchPosts();
+    axiosInstance.interceptors.request.eject(interceptor);
+    return { props: { posts: resp.data } };
+  } catch (err) {
+    console.log("Failed to fetch data with axios call from server side", err);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/signIn",
+      },
+      props: {},
+    };
+  }
 };
 
 const Home = authenticator((pageProps: any) => {
   const { posts } = pageProps;
-  console.log(pageProps, "pageProps");
   return <HomePosts posts={posts} />;
 });
 

@@ -67,6 +67,16 @@
 }
 
 @layer components {
+  body {
+    height: 100vh;
+    overflow-x: hidden;
+  }
+  main {
+    background-color: black;
+    color: white;
+    height: 100vh;
+    width: 100vw;
+  }
   .singleSignInBtn {
     border: 1px solid rgb(218, 220, 224);
     border-radius: 4px;
@@ -183,5 +193,23 @@
   .captionInput {
     padding: 16px;
     border-bottom: 1px solid black;
+  }
+  .userDp {
+    border: 1px solid rgb(38, 38, 38) !important;
+    border-radius: 50% !important;
+  }
+  .postCard {
+    width: 470px;
+    border-bottom: 1px solid rgb(38, 38, 38);
+    padding: 16px 0px;
+  }
+  .postCardMedia {
+    max-height: 585px;
+    border: 1px solid rgb(168, 168, 168) !important;
+    border-radius: 6px;
+  }
+  .postActionsBar {
+    height: 40px;
+    margin: 4px 0px;
   }
 }

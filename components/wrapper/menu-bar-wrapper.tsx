@@ -32,7 +32,7 @@ export const MenuBarWrapper = (props: any) => {
   return (
     <>
       <TopBar />
-      <div className="flex flex-row">
+      <div className="flex flex-row w-full h-full overflow-hidden">
         <SideBar options={modifiedBarOptions} />
         {props.children}
       </div>

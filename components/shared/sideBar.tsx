@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../redux/store";
 import { CreatePostActions } from "../../redux/actions/CreatePost.actions";
+import { AuthServices } from "../../services/AuthServices";
 
 export default function SideBar(props: { options: barOptionInterface[] }) {
   const { options } = props;
@@ -48,12 +49,18 @@ export default function SideBar(props: { options: barOptionInterface[] }) {
       </div>
       <button
         onClick={() => {
-          localStorage.clear();
-          router.push("/signIn");
+          AuthServices.logout()
+            .then(() => {
+              router.push("/signIn");
+            })
+            .catch((err) => {
+              console.log("Failed to logout", err);
+            });
         }}
-        className="mt-auto mx-auto mb-8"
+        className="flex flex-row items-center justify-start w-full p-3 mt-auto mb-4 h-[48px] text-base cursor-pointer"
       >
         <Image src="/assets/logout.svg" alt="logout" width={24} height={24} />
+        <span className="hidden ml-4 text-white lg:flex">Logout</span>
       </button>
     </div>
   );

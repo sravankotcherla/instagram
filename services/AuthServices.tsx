@@ -20,4 +20,7 @@ export const AuthServices = {
   singleSignIn(userProfile: UserSingleSignInProfile) {
     return axios.get("/auth/single-sign-in", { params: userProfile });
   },
+  logout() {
+    return axios.get("/auth/logout");
+  },
 };

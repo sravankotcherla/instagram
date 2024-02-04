@@ -81,13 +81,16 @@ exports.signUpUser = async (req, res) => {
 exports.checkAuth = async (req, res, next) => {
   const token = req.cookies.sessionToken;
   if (!token) {
-    console.log("misssing", req.cookies, req.headers);
+    // console.log("misssing", req.cookies, req.headers);
     return res.status(401).send("JWT token is missing");
   } else {
     jwt.verify(token, process.env.JWT_SECRET_KEY, function (err, result) {
       if (err || !result) {
         console.log(err);
-        return res.status(401).send("Invalid authorization token");
+        return res
+          .status(401)
+          .send("Invalid authorization token")
+          .redirect(301, "/signIn");
       } else {
         User.findOne(
           { id: result.id, email: result.email, username: result.username },
@@ -142,4 +145,13 @@ exports.singleSignIn = async (req, res, next) => {
     console.log(err);
     return res.status(500).send("err");
   }
+};
+
+exports.logout = (req, res) => {
+  return res
+    .cookie("sessionToken", "", {
+      maxAge: 0,
+      httpOnly: true,
+    })
+    .send("Logget Out Successfully");
 };

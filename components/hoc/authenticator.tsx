@@ -21,7 +21,7 @@ export const authenticator = (
             dispatch(setUserLoginInfo(resp.data));
           })
           .catch((err) => {
-            console.log(err);
+            console.log(err, "can't get session");
             router.push("/signIn");
           });
       }
