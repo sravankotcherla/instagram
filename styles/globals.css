@@ -69,7 +69,7 @@
 @layer components {
   body {
     height: 100vh;
-    overflow-x: hidden;
+    overflow: hidden;
   }
   main {
     background-color: black;

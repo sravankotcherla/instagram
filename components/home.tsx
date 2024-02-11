@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { UserLoginInfo } from "../redux/reducers/AuthReducer";
 import { PostServices } from "../services/PostServices";
 import { PostCard } from "./posts/post-card";
 
@@ -10,6 +11,15 @@ export interface PostDetails {
   img: string;
   tags: string[];
   likes: number;
+  userInfo: UserLoginInfo[];
+  isLiked: [LikesMap];
+}
+
+export interface LikesMap {
+  _id: string;
+  userId: string;
+  postId: string;
+  archived: boolean;
 }
 export interface HomeProps {
   posts: any;

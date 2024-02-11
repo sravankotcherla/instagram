@@ -1,9 +1,13 @@
 import { IconButton } from "@mui/material";
 import Image from "next/image";
+import { useState } from "react";
 import { CommentIcon } from "../../icons/comment-icon";
 import { HeartIcon } from "../../icons/heart-icon";
+
 import { SaveIcon } from "../../icons/save-icon";
 import { ShareIcon } from "../../icons/share-icon";
+import { SolidHeartIcon } from "../../icons/solid-heart-icon";
+import { PostServices } from "../../services/PostServices";
 import { PostDetails } from "../home";
 
 interface PostCardProps {
@@ -12,6 +16,10 @@ interface PostCardProps {
 
 export const PostCard = (props: PostCardProps) => {
   const { postDetails } = props;
+
+  const [liked, setLiked] = useState<boolean>(postDetails?.isLiked?.length > 0);
+  const [likesCount, setLikesCount] = useState<number>(postDetails?.likes || 0);
+
   const getCreatedAgo = (createdAt) => {
     const currDate = new Date();
     const createdDate = new Date(createdAt);
@@ -48,10 +56,12 @@ export const PostCard = (props: PostCardProps) => {
           width={32}
           height={32}
           alt="Content"
-          src="/assets/user.svg"
+          src={postDetails.userInfo[0].profileImg}
           className="userDp"
         />
-        <span className="font-semibold  ml-2">UserName</span>
+        <span className="font-semibold  ml-2">
+          {postDetails.userInfo[0].username}
+        </span>
         <span className="text-secondary mx-1">.</span>
         <span className="text-secondary">
           {getCreatedAgo(postDetails.createdAt)}
@@ -65,8 +75,17 @@ export const PostCard = (props: PostCardProps) => {
         className="flex justify-between items-center postActionsBar"
       >
         <div className="flex items-center">
-          <IconButton>
-            <HeartIcon />
+          <IconButton
+            onClick={() => {
+              setLiked((prev) => !prev);
+              setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
+              PostServices.updatePostLikes({
+                postId: postDetails._id,
+                liked: !liked,
+              });
+            }}
+          >
+            {liked ? <SolidHeartIcon /> : <HeartIcon />}
           </IconButton>
           <IconButton>
             <CommentIcon />
@@ -80,9 +99,10 @@ export const PostCard = (props: PostCardProps) => {
         </IconButton>
       </div>
       <div className="flex flex-col gap-2 postCardInfo">
-        <span>{`${postDetails.likes || 0} likes`}</span>
+        <span>{`${likesCount} likes`}</span>
         <span>
-          <strong>Username </strong> {postDetails.content}
+          <strong>{postDetails.userInfo[0].username} </strong>{" "}
+          {postDetails.content}
         </span>
       </div>
     </div>
