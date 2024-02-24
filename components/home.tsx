@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { UserLoginInfo } from "../redux/reducers/AuthReducer";
+import { Comment } from "../services/CommentServices";
 import { PostServices } from "../services/PostServices";
+import { PostCommentsModal } from "./modals/post-comments-model";
 import { PostCard } from "./posts/post-card";
 
 export interface PostDetails {
@@ -29,11 +31,37 @@ export const HomePosts = (props: HomeProps) => {
 
   const [postsList, setPostsList] = useState<PostDetails[]>(posts);
 
+  const [commentDetails, setCommentDetails] = useState<Array<Comment> | null>(
+    null
+  );
+  const [postCommentDetails, setpostCommentDetails] =
+    useState<PostDetails | null>(null);
+
+  const renderPosts = useMemo(() => {
+    return postsList.map((postItem) => {
+      return (
+        <PostCard
+          key={postItem._id}
+          postDetails={postItem}
+          setCommentsDetails={setCommentDetails}
+          setCommentPostDetails={setpostCommentDetails}
+        />
+      );
+    });
+  }, [postsList]);
+
   return (
     <div className="text-white flex flex-col w-full h-full items-center pt-5 overflow-scroll">
-      {postsList.map((postItem) => {
-        return <PostCard key={postItem._id} postDetails={postItem} />;
-      })}
+      {renderPosts}
+      {postCommentDetails && commentDetails && (
+        <PostCommentsModal
+          isOpen={postCommentDetails !== null}
+          postDetails={postCommentDetails}
+          commentsList={commentDetails}
+          setCommentPostDetails={setpostCommentDetails}
+          setCommentsDetails={setCommentDetails}
+        />
+      )}
     </div>
   );
 };

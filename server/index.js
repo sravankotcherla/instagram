@@ -12,6 +12,9 @@ const { authRouter } = require("../server-express/routes/auth.routes");
 const { checkAuth } = require("../server-express/controllers/auth.controller");
 const { profileRouter } = require("../server-express/routes/profile.routes");
 const { postRouter } = require("../server-express/routes/post.routes");
+const {
+  commentRouter,
+} = require("../server-express/routes/comments.routes.js");
 
 function connectToDB(cb) {
   mongoose
@@ -41,6 +44,7 @@ app
       server.use("/api", checkAuth);
       server.use("/api/profile", profileRouter);
       server.use("/api/posts", postRouter);
+      server.use("/api/comment", commentRouter);
 
       server.get("*", (req, res) => {
         return handle(req, res);

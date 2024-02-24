@@ -52,6 +52,8 @@
     color: white;
     height: 200px;
     width: 100%;
+    resize: none;
+    margin: 0px auto;
   }
   .inputTertiary:focus-visible {
     outline: none;
@@ -63,6 +65,9 @@
   }
   .roundedToCircle {
     border-radius: 50%;
+  }
+  .disabledText {
+    color: grey;
   }
 }
 
@@ -98,6 +103,9 @@
     font-size: 16px;
     font-weight: 400;
     text-align: center;
+  }
+  .secondaryTextColor {
+    color: #737373;
   }
   .authInput {
     width: 268px;
@@ -211,5 +219,43 @@
   .postActionsBar {
     height: 40px;
     margin: 4px 0px;
+  }
+  .postModalContent {
+    height: 90vh;
+    padding: 0px !important;
+    color: white;
+    overflow: hidden !important;
+  }
+  .postModalDialog {
+    overflow: hidden;
+  }
+  .postModalMedia {
+    position: relative;
+    width: 500px;
+  }
+  .postModalMedia img {
+    max-width: 500px;
+    height: auto;
+    aspect-ratio: attr(width) / attr(height);
+  }
+  .postModalComments {
+    width: 500px;
+    border-left: 1px solid rgb(38, 38, 38);
+  }
+  .commentsList {
+  }
+  .commentsModalHeader {
+    border-bottom: 1px solid rgb(38, 38, 38);
+    font-size: 14px;
+  }
+  .addCommentBar {
+    height: 52px;
+    font-size: 14px;
+    border-top: 1px solid rgb(38, 38, 38);
+    padding: 6px 16px;
+    text-align: center;
+  }
+  .commentsInput {
+    height: 18px !important;
   }
 }

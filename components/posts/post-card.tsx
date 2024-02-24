@@ -1,51 +1,47 @@
 import { IconButton } from "@mui/material";
 import Image from "next/image";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { getCreatedAgo } from "../../helpers/posts";
 import { CommentIcon } from "../../icons/comment-icon";
-import { HeartIcon } from "../../icons/heart-icon";
+import { Comment, CommentServices } from "../../services/CommentServices";
 
-import { SaveIcon } from "../../icons/save-icon";
-import { ShareIcon } from "../../icons/share-icon";
-import { SolidHeartIcon } from "../../icons/solid-heart-icon";
 import { PostServices } from "../../services/PostServices";
 import { PostDetails } from "../home";
+import { PostActionsBar } from "./post-actions-bar";
 
 interface PostCardProps {
   postDetails: PostDetails;
+  setCommentPostDetails: Dispatch<SetStateAction<PostDetails | null>>;
+  setCommentsDetails: Dispatch<SetStateAction<Comment[] | null>>;
 }
 
 export const PostCard = (props: PostCardProps) => {
-  const { postDetails } = props;
+  const { postDetails, setCommentPostDetails, setCommentsDetails } = props;
 
   const [liked, setLiked] = useState<boolean>(postDetails?.isLiked?.length > 0);
   const [likesCount, setLikesCount] = useState<number>(postDetails?.likes || 0);
 
-  const getCreatedAgo = (createdAt) => {
-    const currDate = new Date();
-    const createdDate = new Date(createdAt);
-    const diffSecs = (currDate - createdDate) / 1000;
-    if (diffSecs < 60) {
-      return "1m";
-    } else if (diffSecs > 60 && diffSecs < 60 * 60) {
-      return `${Math.floor(diffSecs / 60)}m`;
-    } else if (diffSecs >= 60 * 60 && diffSecs < 60 * 60 * 24) {
-      return `${Math.floor(diffSecs / (60 * 60))}h`;
-    } else if (diffSecs >= 60 * 60 * 24 && diffSecs < 60 * 60 * 24 * 7) {
-      return `${Math.floor(diffSecs / (60 * 60 * 24))}d`;
-    } else if (
-      diffSecs >= 60 * 60 * 24 * 7 &&
-      diffSecs < 60 * 60 * 24 * 7 * 4
-    ) {
-      return `${Math.floor(diffSecs / (60 * 60 * 24 * 7))}w`;
-    } else if (
-      diffSecs >= 60 * 60 * 24 * 7 * 4 &&
-      diffSecs < 60 * 60 * 24 * 7 * 4 * 12
-    ) {
-      return `${Math.floor(diffSecs / (60 * 60 * 24 * 7 * 4))}m`;
-    } else {
-      return `${Math.floor(diffSecs / (60 * 60 * 24 * 7 * 4 * 12))}y`;
-    }
+  const fetchComments = () => {
+    CommentServices.fetchComments(postDetails._id)
+      .then((resp) => {
+        const commentsList = resp.data;
+        console.log(commentsList);
+        setCommentsDetails(commentsList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+
+  const handleOnLike = () => {
+    setLiked((prev) => !prev);
+    setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
+    PostServices.updatePostLikes({
+      postId: postDetails._id,
+      liked: !liked,
+    });
+  };
+
   return (
     <div className="postCard text-sm">
       <div
@@ -70,34 +66,14 @@ export const PostCard = (props: PostCardProps) => {
       <div id="postCardMedia" className="postCardMedia">
         <Image alt="Media" src={postDetails.img} width={470} height={585} />
       </div>
-      <div
-        id="postActions"
-        className="flex justify-between items-center postActionsBar"
-      >
-        <div className="flex items-center">
-          <IconButton
-            onClick={() => {
-              setLiked((prev) => !prev);
-              setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
-              PostServices.updatePostLikes({
-                postId: postDetails._id,
-                liked: !liked,
-              });
-            }}
-          >
-            {liked ? <SolidHeartIcon /> : <HeartIcon />}
-          </IconButton>
-          <IconButton>
-            <CommentIcon />
-          </IconButton>
-          <IconButton>
-            <ShareIcon />
-          </IconButton>
-        </div>
-        <IconButton>
-          <SaveIcon />
-        </IconButton>
-      </div>
+      <PostActionsBar
+        liked={liked}
+        onLike={handleOnLike}
+        onComment={() => {
+          setCommentPostDetails(postDetails);
+          fetchComments();
+        }}
+      />
       <div className="flex flex-col gap-2 postCardInfo">
         <span>{`${likesCount} likes`}</span>
         <span>
