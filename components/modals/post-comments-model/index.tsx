@@ -12,6 +12,8 @@ import {
   createCommentPayload,
 } from "../../../services/CommentServices";
 import { CommentsList } from "./comments-list";
+import { UpdateLoader } from "../../shared/loaders/update-loader";
+import clsx from "clsx";
 
 interface PostCommentsModalProps {
   postDetails: PostDetails;
@@ -33,17 +35,7 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
   const [openModal, setOpenModal] = useState<boolean>(isOpen);
   const [comments, setComments] = useState<Comment[] | null>(commentsList);
   const [replyInfo, setReplyInfo] = useState<ReplyCommentInfo | null>(null);
-
-  const fetchComments = (post: PostDetails, parent: string | undefined) => {
-    CommentServices.fetchComments(post._id, parent)
-      .then((resp) => {
-        const commentsList = resp.data;
-        setComments(commentsList);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const [updating, setUpdating] = useState<boolean>(false);
 
   const handlePostComment = (text: string) => {
     const commentPayload: createCommentPayload = {
@@ -54,18 +46,24 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
     CommentServices.postComment(commentPayload)
       .then((resp) => {
         console.log("Comment posted Successfully");
-        fetchComments(postDetails, undefined);
+        setUpdating(true);
+        setReplyInfo(null);
       })
       .catch((err) => {
         console.log("Failed to post comment", err);
       });
   };
 
-  const renderCommentsList = () => {
+  const renderComments = useMemo(() => {
     return (
-      <CommentsList postId={postDetails._id} setReplyInfo={setReplyInfo} />
+      <CommentsList
+        postId={postDetails._id}
+        setReplyInfo={setReplyInfo}
+        updating={updating}
+        setUpdating={setUpdating}
+      />
     );
-  };
+  }, [postDetails, updating]);
 
   return (
     <Dialog
@@ -78,7 +76,10 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
       maxWidth={1000}
       className="postModalDialog"
     >
-      <DialogContent className="flex flex-row postModalContent p-0 bg-black m-0">
+      {updating ? <UpdateLoader /> : null}
+      <DialogContent
+        className={clsx("flex flex-row postModalContent p-0 bg-black m-0")}
+      >
         <div className="postModalMedia flex items-center justify-center">
           <img alt="Media" src={postDetails.img} />
         </div>
@@ -98,7 +99,7 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
               {postDetails.userInfo[0].username}
             </span>
           </div>
-          {renderCommentsList()}
+          {renderComments}
           <PostActionsBar
             liked={postDetails.isLiked?.length > 0}
             onLike={() => {}}

@@ -11,11 +11,13 @@ interface CommentBoxProps {
   postId: string;
   comment: Comment;
   setReplyInfo: React.Dispatch<SetStateAction<ReplyCommentInfo | null>>;
+  updating: boolean;
 }
 export const CommentBox = (props: CommentBoxProps) => {
-  const { postId, comment, setReplyInfo } = props;
+  const { postId, comment, setReplyInfo, updating } = props;
 
   const [showReplies, setShowReplies] = useState<boolean>(false);
+
   return (
     <div id="commentBox" className="flex flex-col mb-4">
       <div className="flex flex-row justify-between gap-2">
@@ -36,7 +38,8 @@ export const CommentBox = (props: CommentBoxProps) => {
             <span>{getCreatedAgo(comment.createdAt)}</span>
             <span>{`${comment.likes} likes`}</span>
             <span
-              onClick={() => {
+              onClick={(event) => {
+                event.stopPropagation();
                 setReplyInfo({
                   commentId: comment._id,
                   text: `@${comment.createdBy.username}`,
@@ -55,12 +58,13 @@ export const CommentBox = (props: CommentBoxProps) => {
       <div className="ml-12 mt-4">
         {comment.replyInfo?.replies ? (
           <div
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation();
               setShowReplies((prev) => !prev);
             }}
           >
             {!showReplies ? (
-              <span className="text-xs text-secondary cursor-pointer ">{`------- View replies (${comment.replyInfo?.replies})`}</span>
+              <span className="text-xs text-secondary cursor-pointer ">{`----- View replies (${comment.replyInfo?.replies})`}</span>
             ) : (
               <div className="flex flex-col gap-4 items-start justify-start">
                 <span className="text-xs text-secondary cursor-pointer">
@@ -70,6 +74,7 @@ export const CommentBox = (props: CommentBoxProps) => {
                   postId={postId}
                   setReplyInfo={setReplyInfo}
                   parentComment={comment._id}
+                  updating={updating}
                   disableGutters
                 />
               </div>

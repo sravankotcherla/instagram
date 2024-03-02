@@ -259,4 +259,13 @@
   .commentsInput {
     height: 18px !important;
   }
+  .disable {
+    background-color: #cccccc;
+    color: #aaaaaa;
+    opacity: 0.4;
+    filter: alpha(opacity = 50);
+  }
+  .updateLoader .MuiPaper-root {
+    background: transparent !important;
+  }
 }

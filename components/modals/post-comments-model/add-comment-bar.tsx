@@ -15,9 +15,7 @@ export const AddCommentBar = (props: AddCommentInterface) => {
   const [commentText, setCommentText] = useState<string>("");
 
   useEffect(() => {
-    if (replyInfo) {
-      setCommentText(replyInfo.text);
-    }
+    setCommentText(replyInfo?.text || "");
   }, [replyInfo]);
 
   return (
