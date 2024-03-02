@@ -1,10 +1,10 @@
 import { Dialog, DialogContent } from "@mui/material";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { PostDetails } from "../../home";
 import Image from "next/image";
 import { PostActionsBar } from "../../posts/post-actions-bar";
 import { getCreatedAgo } from "../../../helpers/posts";
-import { AddCommentBar } from "./add-comment-bar";
+import { AddCommentBar, ReplyCommentInfo } from "./add-comment-bar";
 import { CrossIcon } from "../../../icons/cross-icon";
 import {
   Comment,
@@ -20,6 +20,7 @@ interface PostCommentsModalProps {
   setCommentPostDetails: Dispatch<SetStateAction<PostDetails | null>>;
   setCommentsDetails: Dispatch<SetStateAction<Comment[] | null>>;
 }
+
 export const PostCommentsModal = (props: PostCommentsModalProps) => {
   const {
     isOpen,
@@ -31,33 +32,41 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
 
   const [openModal, setOpenModal] = useState<boolean>(isOpen);
   const [comments, setComments] = useState<Comment[] | null>(commentsList);
+  const [replyInfo, setReplyInfo] = useState<ReplyCommentInfo | null>(null);
 
-  const fetchComments = () => {
-    CommentServices.fetchComments(postDetails._id)
+  const fetchComments = (post: PostDetails, parent: string | undefined) => {
+    CommentServices.fetchComments(post._id, parent)
       .then((resp) => {
         const commentsList = resp.data;
-        console.log(commentsList);
         setComments(commentsList);
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
   const handlePostComment = (text: string) => {
     const commentPayload: createCommentPayload = {
       postId: postDetails._id,
       text: text,
+      parent: replyInfo?.commentId,
     };
-    debugger;
     CommentServices.postComment(commentPayload)
       .then((resp) => {
         console.log("Comment posted Successfully");
-        fetchComments();
+        fetchComments(postDetails, undefined);
       })
       .catch((err) => {
         console.log("Failed to post comment", err);
       });
   };
+
+  const renderCommentsList = () => {
+    return (
+      <CommentsList postId={postDetails._id} setReplyInfo={setReplyInfo} />
+    );
+  };
+
   return (
     <Dialog
       open={openModal}
@@ -89,22 +98,25 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
               {postDetails.userInfo[0].username}
             </span>
           </div>
-          <CommentsList comments={comments} />
+          {renderCommentsList()}
           <PostActionsBar
             liked={postDetails.isLiked?.length > 0}
             onLike={() => {}}
             onComment={() => {
               document.getElementById("commentInputBar")?.focus();
             }}
-            customClass="px-2"
+            customClass="px-2 shrink-0"
           />
-          <div id="postAdditionalInfo" className="flex flex-col px-4">
+          <div id="postAdditionalInfo" className="flex flex-col px-4 shrink-0">
             <span>{`${postDetails.likes} likes`}</span>
             <span className="secondaryTextColor mb-4">{`${getCreatedAgo(
               postDetails.createdAt
             )} ago`}</span>
           </div>
-          <AddCommentBar onPostComment={handlePostComment} />
+          <AddCommentBar
+            onPostComment={handlePostComment}
+            replyInfo={replyInfo}
+          />
         </div>
       </DialogContent>
       <span

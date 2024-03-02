@@ -243,6 +243,7 @@
     border-left: 1px solid rgb(38, 38, 38);
   }
   .commentsList {
+    border-bottom: 1px solid rgb(38, 38, 38);
   }
   .commentsModalHeader {
     border-bottom: 1px solid rgb(38, 38, 38);

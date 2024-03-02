@@ -14,16 +14,69 @@ exports.createComment = (req, res) => {
     });
 };
 exports.fetchComments = (req, res) => {
-  const { postId } = req.params;
+  let { postId, parent } = req.query;
+  if (!parent) {
+    parent = null;
+  } else {
+    parent = { $toObjectId: parent };
+  }
   if (!mongoose.isValidObjectId(postId)) {
     return res.status(400).jsonp("Invalid postId");
   }
-  Comment.find({ postId: postId, archived: false })
-    .populate({
-      path: "createdBy",
-      select: "username profileImg likes followers bio",
-    })
-    .limit(15)
+  Comment.aggregate([
+    {
+      $match: {
+        $expr: {
+          $and: [
+            { $eq: ["$postId", { $toObjectId: postId }] },
+            { $eq: ["$archived", false] },
+            { $eq: ["$parent", parent] },
+          ],
+        },
+      },
+    },
+    { $sort: { createdAt: -1 } },
+    { $limit: 15 },
+    {
+      $lookup: {
+        from: "users",
+        localField: "createdBy",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              profileImg: 1,
+              likes: 1,
+              followers: 1,
+              bio: 1,
+            },
+          },
+        ],
+        as: "author",
+      },
+    },
+    {
+      $lookup: {
+        from: "comments",
+        let: { currId: "$_id" },
+        pipeline: [
+          { $match: { $expr: { $eq: ["$parent", "$$currId"] } } },
+          { $count: "replies" },
+        ],
+        as: "replyInfo",
+      },
+    },
+    {
+      $addFields: {
+        createdBy: { $arrayElemAt: ["$author", 0] },
+        replyInfo: { $arrayElemAt: ["$replyInfo", 0] },
+      },
+    },
+    {
+      $project: { author: 0 },
+    },
+  ])
     .then((comments) => {
       return res.status(200).jsonp(comments);
     })

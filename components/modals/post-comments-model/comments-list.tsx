@@ -1,48 +1,51 @@
-import { Comment } from "../../../services/CommentServices";
-import Image from "next/image";
-import { HeartIcon } from "../../../icons/heart-icon";
-import { IconButton } from "@mui/material";
-import { getCreatedAgo } from "../../../helpers/posts";
-
+import { Comment, CommentServices } from "../../../services/CommentServices";
+import { SetStateAction, useEffect, useState } from "react";
+import { ReplyCommentInfo } from "./add-comment-bar";
+import { CommentBox } from "./comment-box";
+import clsx from "clsx";
 export interface CommentsListProps {
-  comments: Comment[] | null;
+  postId: string;
+  setReplyInfo: React.Dispatch<SetStateAction<ReplyCommentInfo | null>>;
+  parentComment?: string;
+  disableGutters?: boolean;
 }
 export const CommentsList = (props: CommentsListProps) => {
-  const { comments } = props;
+  const { setReplyInfo, postId, parentComment, disableGutters } = props;
+
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  const fetchComments = () => {
+    CommentServices.fetchComments(postId, parentComment)
+      .then((resp) => {
+        const commentsList = resp.data;
+        setComments(commentsList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
+
   return (
-    <div id="commentsSection" className="grow commentsList text-sm p-4">
+    <div
+      id="commentsSection"
+      className={clsx(" text-sm", {
+        ["p-4"]: !disableGutters,
+        ["grow overflow-auto commentsList"]: !parentComment,
+      })}
+    >
       {comments?.length
         ? comments.map((comment) => {
             return (
               <div key={comment._id}>
-                <div
-                  id="commentBox"
-                  className="flex flex-row justify-between gap-2 mb-4"
-                >
-                  <div className="shrink-0">
-                    <Image
-                      width={32}
-                      height={32}
-                      alt="Content"
-                      src={comment.createdBy.profileImg || ""}
-                      className="userDp"
-                    />
-                  </div>
-                  <div className="font-semibold  ml-2 mt-1 grow">
-                    <span>
-                      <strong>{comment.createdBy.username} </strong>{" "}
-                      {comment.text}
-                    </span>
-                    <div className="flex items-center gap-2 text-xs secondaryTextColor mt-2">
-                      <span>{getCreatedAgo(comment.createdAt)}</span>
-                      <span>{`${comment.likes} likes`}</span>
-                      <span onClick={() => {}}>Reply</span>
-                    </div>
-                  </div>
-                  <IconButton>
-                    <HeartIcon width={12} height={12} />
-                  </IconButton>
-                </div>
+                <CommentBox
+                  postId={postId}
+                  comment={comment}
+                  setReplyInfo={setReplyInfo}
+                />
               </div>
             );
           })

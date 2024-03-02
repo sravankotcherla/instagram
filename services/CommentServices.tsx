@@ -14,12 +14,13 @@ export interface Comment {
   likes: number;
   createdBy: UserLoginInfo;
   createdAt: string;
+  replyInfo: { replies: number };
 }
 export const CommentServices = {
   postComment(commentInfo: createCommentPayload) {
     return axiosInstance.post("/api/comment", commentInfo);
   },
-  fetchComments(postId: string) {
-    return axiosInstance.get(`/api/comment/${postId}`);
+  fetchComments(postId: string, parent: string | undefined = undefined) {
+    return axiosInstance.get(`/api/comment/`, { params: { postId, parent } });
   },
 };
