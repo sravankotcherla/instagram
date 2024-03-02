@@ -3,6 +3,7 @@ const async = require("async");
 const { User } = require("../models/user.model");
 const mongoose = require("mongoose");
 const Likes = require("../models/postLikeMap.model");
+const { Comment } = require("../models/comments.model");
 
 exports.createPost = async (req, res) => {
   try {
@@ -94,22 +95,36 @@ exports.fetchPosts = async (req, res) => {
   );
 };
 
+exports.getLikedSchema = (type) => {
+  switch (type) {
+    case "comment": {
+      return Comment;
+    }
+    case "post": {
+      return Post;
+    }
+    default: {
+      return Post;
+    }
+  }
+};
 exports.updatePost = (req, res) => {
-  const { postId, liked } = req.body;
-  if (!mongoose.isValidObjectId(postId)) {
-    return res.status(400).send("Invalid postId");
+  const { srcId, liked, type } = req.body;
+  if (!mongoose.isValidObjectId(srcId)) {
+    return res.status(400).send("Invalid srcId");
   } else {
-    const postObjectId = new mongoose.Types.ObjectId(postId);
+    const srcObjId = new mongoose.Types.ObjectId(srcId);
     async.parallel(
       {
         postInfo: function (done) {
-          Post.updateOne(
-            { _id: postObjectId },
-            { $inc: { likes: liked ? 1 : -1 } },
-            { new: true }
-          )
+          const reqModel = exports.getLikedSchema(type);
+          reqModel
+            .updateOne(
+              { _id: srcObjId },
+              { $inc: { likes: liked ? 1 : -1 } },
+              { new: true }
+            )
             .then((postInfo) => {
-              console.log(postInfo);
               return done(null, postInfo);
             })
             .catch((err) => {
@@ -121,16 +136,15 @@ exports.updatePost = (req, res) => {
         },
         postLikeMap: function (done) {
           const updateObj = {
-            srcObject: postObjectId,
+            srcObject: srcObjId,
             userId: req.user._id,
-            type: "post",
+            type: type,
             archived: !liked,
           };
-          Likes.updateOne({ srcObject: postObjectId }, updateObj, {
+          Likes.updateOne({ srcObject: srcObjId }, updateObj, {
             upsert: true,
           })
             .then((postLikeMap) => {
-              console.log(postLikeMap);
               return done(null, postLikeMap);
             })
             .catch((err) => {

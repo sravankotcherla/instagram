@@ -10,8 +10,9 @@ export interface CreatePostPayload {
 }
 
 export interface UpdatePostLikes {
-  postId: string;
+  srcId: string;
   liked: boolean;
+  type: string;
 }
 
 export const PostServices = {

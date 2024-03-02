@@ -37,8 +37,9 @@ export const PostCard = (props: PostCardProps) => {
     setLiked((prev) => !prev);
     setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
     PostServices.updatePostLikes({
-      postId: postDetails._id,
+      srcId: postDetails._id,
       liked: !liked,
+      type: "post",
     });
   };
 

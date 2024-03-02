@@ -30,7 +30,6 @@ export const CommentsList = (props: CommentsListProps) => {
       .then((resp) => {
         const commentsList = resp.data;
         setComments(commentsList);
-        debugger;
         setLoading(false);
         if (setUpdating) setUpdating(false);
       })
@@ -49,7 +48,6 @@ export const CommentsList = (props: CommentsListProps) => {
     }
   }, [updating]);
 
-  debugger;
   return (
     <div
       id="commentsSection"

@@ -58,6 +58,28 @@ exports.fetchComments = (req, res) => {
     },
     {
       $lookup: {
+        from: "likes",
+        let: { currId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$srcObject", "$$currId"] },
+                  { $eq: ["$userId", req.user._id] },
+                  { $eq: ["$type", "comment"] },
+                  { $eq: ["$archived", false] },
+                ],
+              },
+            },
+          },
+          { $count: "count" },
+        ],
+        as: "isLikedByUser",
+      },
+    },
+    {
+      $lookup: {
         from: "comments",
         let: { currId: "$_id" },
         pipeline: [
@@ -71,10 +93,11 @@ exports.fetchComments = (req, res) => {
       $addFields: {
         createdBy: { $arrayElemAt: ["$author", 0] },
         replyInfo: { $arrayElemAt: ["$replyInfo", 0] },
+        isLiked: { $arrayElemAt: ["$isLikedByUser", 0] },
       },
     },
     {
-      $project: { author: 0 },
+      $project: { author: 0, isLikedByUser: 0 },
     },
   ])
     .then((comments) => {

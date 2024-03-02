@@ -15,6 +15,7 @@ export interface Comment {
   createdBy: UserLoginInfo;
   createdAt: string;
   replyInfo: { replies: number };
+  isLiked: { count: number };
 }
 export const CommentServices = {
   postComment(commentInfo: createCommentPayload) {

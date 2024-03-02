@@ -6,6 +6,8 @@ import { SetStateAction, useState } from "react";
 import { ReplyCommentInfo } from "./add-comment-bar";
 import { Comment } from "../../../services/CommentServices";
 import { CommentsList } from "./comments-list";
+import { PostServices } from "../../../services/PostServices";
+import { SolidHeartIcon } from "../../../icons/solid-heart-icon";
 
 interface CommentBoxProps {
   postId: string;
@@ -17,6 +19,20 @@ export const CommentBox = (props: CommentBoxProps) => {
   const { postId, comment, setReplyInfo, updating } = props;
 
   const [showReplies, setShowReplies] = useState<boolean>(false);
+  const [liked, setLiked] = useState<boolean>(
+    comment.isLiked?.count === 1 ? true : false
+  );
+  const [likesCount, setLikesCount] = useState<number>(comment.likes || 0);
+
+  const handleCommentLike = (isLike: boolean) => {
+    PostServices.updatePostLikes({
+      srcId: comment._id,
+      liked: isLike,
+      type: "comment",
+    }).catch((err) => {
+      console.log("Failed to like comment", err);
+    });
+  };
 
   return (
     <div id="commentBox" className="flex flex-col mb-4">
@@ -36,7 +52,7 @@ export const CommentBox = (props: CommentBoxProps) => {
           </span>
           <div className="flex items-center gap-2 text-xs secondaryTextColor mt-2">
             <span>{getCreatedAgo(comment.createdAt)}</span>
-            <span>{`${comment.likes} likes`}</span>
+            <span>{`${likesCount} likes`}</span>
             <span
               onClick={(event) => {
                 event.stopPropagation();
@@ -51,8 +67,19 @@ export const CommentBox = (props: CommentBoxProps) => {
             </span>
           </div>
         </div>
-        <IconButton>
-          <HeartIcon width={12} height={12} />
+        <IconButton
+          onClick={(event) => {
+            event.stopPropagation();
+            handleCommentLike(!liked);
+            setLiked((prev) => !prev);
+            setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
+          }}
+        >
+          {!liked ? (
+            <HeartIcon width={12} height={12} />
+          ) : (
+            <SolidHeartIcon width={12} height={12} customColor="white" />
+          )}
         </IconButton>
       </div>
       <div className="ml-12 mt-4">
