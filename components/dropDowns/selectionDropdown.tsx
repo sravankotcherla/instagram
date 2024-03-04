@@ -1,7 +1,6 @@
 import { Popper } from "@mui/base";
 import { useState } from "react";
 import { Checkbox } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChevronDownIcon } from "../../icons/chevron-down";
 import { CircleIcon } from "../../icons/circle-icon";
 import { CircleCheckIcon } from "../../icons/circle-checked-icon";
