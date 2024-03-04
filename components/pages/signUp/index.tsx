@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { signUpFormFields } from "../../../constants/signUpFormFields";
@@ -36,9 +37,9 @@ export const SignUp = () => {
 
       <div className="authSwitchBox text-[14px]">
         <p className="mr-2">Have an account?</p>
-        <a href="/signIn" className="text-[#0095f6]">
+        <Link href={"/signIn"} className="text-[#0095f6]">
           Log In
-        </a>
+        </Link>
       </div>
     </div>
   );

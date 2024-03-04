@@ -10,6 +10,7 @@ import { setUserLoginInfo } from "../../../redux/actions/Auth.actions";
 import { AuthServices } from "../../../services/AuthServices";
 import { AuthForm } from "../../forms/authForm";
 import Image from "next/image";
+import Link from "next/link";
 
 export interface UserSingleSignInProfile {
   name: string;
@@ -91,9 +92,9 @@ export const SignIn = () => {
 
       <div className="authSwitchBox text-[14px]">
         <p className="mr-2">Have an account?</p>
-        <a href="/signUp" className="text-[#0095f6]">
+        <Link href={"/signUp"} className="text-[#0095f6]">
           Sign Up
-        </a>
+        </Link>
       </div>
     </div>
   );
