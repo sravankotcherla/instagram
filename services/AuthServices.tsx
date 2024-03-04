@@ -3,7 +3,7 @@ import { UserSingleSignInProfile } from "../components/pages/signIn";
 import { axiosInstance } from "./PostServices";
 
 export const AuthServices = {
-  signUp(user) {
+  signUp(user: any) {
     return axios.post("/auth/sign-up", { user: user });
   },
   signIn({

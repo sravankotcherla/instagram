@@ -73,7 +73,7 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
         setCommentPostDetails(null);
         setCommentsDetails(null);
       }}
-      maxWidth={1000}
+      maxWidth="lg"
       className="postModalDialog"
     >
       {updating ? <UpdateLoader /> : null}

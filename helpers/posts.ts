@@ -1,6 +1,6 @@
 export const getCreatedAgo = (createdAt: string) => {
-  const currDate = new Date();
-  const createdDate = new Date(createdAt);
+  const currDate: any = new Date();
+  const createdDate: any = new Date(createdAt);
   const diffSecs = (currDate - createdDate) / 1000;
   if (diffSecs < 60) {
     return "1m";

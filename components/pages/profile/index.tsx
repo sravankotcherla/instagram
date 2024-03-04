@@ -41,7 +41,7 @@ export const Profile = (props: ProfileProps) => {
           <div className="flex flex-row  items-center gap-5 mb-5">
             <span>{`${userInfo?.posts?.length || 0} posts`}</span>
             <span>{`${userInfo?.followers || 0} followers`}</span>
-            <span>{`${userInfo?.following || 0} following`}</span>
+            <span>{`${userInfo?.followers || 0} following`}</span>
           </div>
           <div>{userInfo?.name}</div>
         </div>

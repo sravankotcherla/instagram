@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 interface AddCommentInterface {
   onPostComment: (commentText: string) => void;
-  replyInfo?: ReplyCommentInfo;
+  replyInfo?: ReplyCommentInfo | null;
 }
 
 export interface ReplyCommentInfo {

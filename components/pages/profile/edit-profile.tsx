@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { genderOptions } from "../../../constants/profileGenderOptions";
 import { setUserLoginInfo } from "../../../redux/actions/Auth.actions";
