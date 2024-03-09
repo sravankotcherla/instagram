@@ -16,7 +16,7 @@ jobs:
         uses: MaximilianoBz/dockerhub-buildpush@v1.1
         with:
           registry_url: docker.io
-          repository_name: satyakotcherla/my-projects
+          repository_name: my-projects
           user_name: satyakotcherla
           password: Satya@3572
           image_version: latest
