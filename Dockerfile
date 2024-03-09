@@ -8,4 +8,8 @@ WORKDIR /app
 
 RUN npm ci
 
-CMD ["node", "server/index.js"]
+RUN rm -rf .next
+
+RUN npm run build
+
+CMD ["npm", "start"]
