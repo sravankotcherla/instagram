@@ -1,7 +1,8 @@
 import axios from "axios";
 
+export const BASE_URL = process.env.EXPRESS_HOST;
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: BASE_URL,
 });
 export interface CreatePostPayload {
   img: string;
