@@ -25,7 +25,6 @@ export const PostCard = (props: PostCardProps) => {
     CommentServices.fetchComments(postDetails._id)
       .then((resp) => {
         const commentsList = resp.data;
-        console.log(commentsList);
         setCommentsDetails(commentsList);
       })
       .catch((err) => {

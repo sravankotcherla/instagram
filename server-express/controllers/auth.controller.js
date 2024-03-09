@@ -79,12 +79,8 @@ exports.signUpUser = async (req, res) => {
 };
 
 exports.checkAuth = async (req, res, next) => {
-  console.log("in checkAuth");
-  console.log(req.path);
-  console.log(req.cookies);
   const token = req.cookies.sessionToken;
   if (!token) {
-    // console.log("misssing", req.cookies, req.headers);
     return res.status(401).send("JWT token is missing");
   } else {
     jwt.verify(token, process.env.JWT_SECRET_KEY, function (err, result) {

@@ -29,7 +29,6 @@ exports.fetchPosts = async (req, res) => {
         User.findOne({ _id: req.user._id }, { followers: 1 })
           .lean()
           .then((userData) => {
-            console.log(userData.followers);
             return done(null, userData.followers);
           })
           .catch((err) => {
