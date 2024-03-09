@@ -1,0 +1,23 @@
+name: Docker Image CD
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build and Push to DockerHub
+    uses: MaximilianoBz/dockerhub-buildpush@v1.1
+    with:
+      registry_url: docker.io
+      repository_name: satyakotcherla/my-projects
+      user_name: satyakotcherla
+      password: Satya@3572
+      image_version: latest
