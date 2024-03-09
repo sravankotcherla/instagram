@@ -23,9 +23,6 @@ exports.createPost = async (req, res) => {
 
 exports.fetchPosts = async (req, res) => {
   const skipNumber = parseInt(req?.query?.skip) || 0;
-  const posts = await Post.find({ createdBy: req.user._id })
-    .skip(skipNumber)
-    .limit(5);
   async.waterfall(
     [
       function (done) {

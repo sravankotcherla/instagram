@@ -79,6 +79,9 @@ exports.signUpUser = async (req, res) => {
 };
 
 exports.checkAuth = async (req, res, next) => {
+  console.log("in checkAuth");
+  console.log(req.path);
+  console.log(req.cookies);
   const token = req.cookies.sessionToken;
   if (!token) {
     // console.log("misssing", req.cookies, req.headers);
