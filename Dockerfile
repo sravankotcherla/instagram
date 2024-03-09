@@ -8,6 +8,8 @@ WORKDIR /app/insta-next
 
 RUN npm ci
 
+RUN rm -rf .next
+
 RUN npm run build
 
 CMD ["npm", "start"]
