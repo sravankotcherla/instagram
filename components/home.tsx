@@ -39,7 +39,6 @@ export const HomePosts = (props: HomeProps) => {
     useState<PostDetails | null>(null);
 
   useEffect(() => {
-    console.log();
     PostServices.fetchPosts()
       .then((resp) => {
         setPostsList(resp.data);

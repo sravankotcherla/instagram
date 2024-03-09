@@ -57,7 +57,6 @@ export const SignIn = () => {
       dispatch(setUserLoginInfo(resp.data.user));
       router.push("/");
     } catch (err: any) {
-      console.log(err.response.statusCode);
       console.log(err);
     }
   };
