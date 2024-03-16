@@ -11,13 +11,14 @@ export const authenticator = (
 ) => {
   // eslint-disable-next-line react/display-name
   return function (pageProps: any) {
+    const { sessionInfo } = pageProps;
     const router = useRouter();
     const dispatch = useDispatch();
 
     const session = useSelector(userLoginInfo);
 
     useEffect(() => {
-      if (!session) {
+      if (!session && !sessionInfo) {
         AuthServices.signIn({ email: null, password: null })
           .then((resp) => {
             dispatch(setUserLoginInfo(resp.data));
@@ -26,8 +27,10 @@ export const authenticator = (
             console.log(err, "can't get session");
             router.push("/signIn");
           });
+      } else if (sessionInfo && !session) {
+        dispatch(setUserLoginInfo(sessionInfo));
       }
-    }, []);
+    }, [session, sessionInfo]);
 
     if (session) {
       return <MenuBarWrapper>{WrappedComponent(pageProps)}</MenuBarWrapper>;
