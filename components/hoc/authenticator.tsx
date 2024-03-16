@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserLoginInfo } from "../../redux/actions/Auth.actions";
 import { userLoginInfo } from "../../redux/reducers/AuthReducer";
 import { AuthServices } from "../../services/AuthServices";
+import { MenuBarWrapper } from "../wrapper/menu-bar-wrapper";
 
 export const authenticator = (
   WrappedComponent: (pageProps: any) => JSX.Element
 ) => {
+  // eslint-disable-next-line react/display-name
   return function (pageProps: any) {
     const router = useRouter();
     const dispatch = useDispatch();
@@ -28,7 +30,7 @@ export const authenticator = (
     }, []);
 
     if (session) {
-      return WrappedComponent(pageProps);
+      return <MenuBarWrapper>{WrappedComponent(pageProps)}</MenuBarWrapper>;
     }
 
     return null;
