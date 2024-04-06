@@ -10,6 +10,7 @@ export interface UserLoginInfo {
   email: string;
   bio: string;
   followers: number;
+  following: number;
   posts: any;
   gender?: GenderOption;
 }

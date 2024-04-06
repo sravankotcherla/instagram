@@ -17,22 +17,26 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
 
   const userInfo = useSelector(userLoginInfo);
   const [postImg, setPostImg] = useState<string | null>(null);
+  const [imgFile, setImgFile] = useState<File | null>(null); // [file, setFile
   const [caption, setCaption] = useState<string>("");
 
   const dispatch = useDispatch();
 
   const handleCloseModal = () => {
+    setPostImg(null);
+    setImgFile(null);
+    setCaption("");
     dispatch(CreatePostActions.setPostModalOpen(false));
   };
   const handleSharePost = async () => {
-    if (postImg?.length) {
-      const resp = await PostServices.createPost({
-        img: postImg,
-        content: "",
-        tags: [],
-      });
-      handleCloseModal();
-    }
+    const postData = new FormData();
+    postData.append("postImg", imgFile);
+    postData.append("content", caption);
+    postData.append("tags", []);
+    debugger;
+
+    const resp = await PostServices.createPost(postData);
+    handleCloseModal();
   };
   return (
     <Modal
@@ -72,25 +76,30 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
             <Image src={postImg} width={560} height={560} alt="postImg" />
           ) : (
             <div className="secondaryButton">
-              <label htmlFor="selectFromPc" className="cursor-pointer">
-                Select from computer
-              </label>
-              <input
-                id="selectFromPc"
-                type="file"
-                className="hidden"
-                onChange={(event) => {
-                  const img = event?.currentTarget?.files?.[0];
-                  if (img) {
-                    const fileReader = new FileReader();
-                    fileReader.readAsDataURL(img);
-                    fileReader.onload = async (event) => {
-                      const imgUrl = event?.target?.result?.toString() || null;
-                      setPostImg(imgUrl);
-                    };
-                  }
-                }}
-              />
+              <form encType="multipart/form-data">
+                <label htmlFor="selectFromPc" className="cursor-pointer">
+                  Select from computer
+                </label>
+                <input
+                  id="selectFromPc"
+                  type="file"
+                  className="hidden"
+                  name="postImg"
+                  onChange={(event) => {
+                    const img = event?.currentTarget?.files?.[0];
+                    if (img) {
+                      setImgFile(img);
+                      const fileReader = new FileReader();
+                      fileReader.readAsDataURL(img);
+                      fileReader.onload = async (event) => {
+                        const imgUrl =
+                          event?.target?.result?.toString() || null;
+                        setPostImg(imgUrl);
+                      };
+                    }
+                  }}
+                />
+              </form>
             </div>
           )}
           {postImg && (

@@ -21,7 +21,7 @@ export const PostServices = {
     return axiosInstance.get("/api/posts", { params: { skip: skip } });
   },
   createPost(payload: CreatePostPayload) {
-    return axiosInstance.put("/api/posts", payload);
+    return axiosInstance.post("/api/posts", payload);
   },
   updatePostLikes(payload: UpdatePostLikes) {
     return axiosInstance.post("/api/posts/likes", payload);

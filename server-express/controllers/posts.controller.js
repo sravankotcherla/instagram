@@ -4,17 +4,18 @@ const { User } = require("../models/user.model");
 const mongoose = require("mongoose");
 const Likes = require("../models/postLikeMap.model");
 const { Comment } = require("../models/comments.model");
+const fs = require("fs");
 
 exports.createPost = async (req, res) => {
   try {
     const { content, img, tags } = req.body;
     const newPost = await Post.create({
       content,
-      img,
-      tags,
+      img: req.file.filename,
+      tags: tags.length ? tags.split(",") : [],
       createdBy: req.user._id,
     });
-    return res.status(200).jsonp(newPost);
+    res.status(200).jsonp(newPost);
   } catch (err) {
     console.log("Failed to create post");
     res.status(400).jsonp({ message: "Failed to create post", error: err });
@@ -77,6 +78,50 @@ exports.fetchPosts = async (req, res) => {
           .catch((err) => {
             return done(err);
           });
+      },
+      function (postsData, done) {
+        const imagesData = postsData.map(({ _id, img }) => {
+          const splitImgName = img.split(".");
+          return {
+            name: _id + "." + splitImgName[splitImgName.length - 1],
+            img,
+          };
+        });
+        async.concat(
+          imagesData,
+          (imgData, cb) => {
+            try {
+              const writeStream = fs.createWriteStream(
+                `./images/${imgData.name}`
+              );
+              var db = mongoose.connections[0].db;
+              const gridFsBucket = new mongoose.mongo.GridFSBucket(db, {
+                bucketName: "media",
+              });
+              gridFsBucket
+                .openDownloadStreamByName(imgData.img)
+                .pipe(writeStream);
+              writeStream.on("finish", () => {
+                console.log("Image downloaded successfully");
+                return cb(null, imgData);
+              });
+              writeStream.on("error", (err) => {
+                console.log("Failed to write image", err);
+                return cb(err);
+              });
+            } catch (err) {
+              console.log("Failed to download image");
+              return cb(err);
+            }
+          },
+          function (err, results) {
+            if (err) {
+              return done(err);
+            } else {
+              return done(null, postsData);
+            }
+          }
+        );
       },
     ],
     function (err, results) {

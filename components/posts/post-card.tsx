@@ -64,8 +64,18 @@ export const PostCard = (props: PostCardProps) => {
           {getCreatedAgo(postDetails.createdAt)}
         </span>
       </div>
-      <div id="postCardMedia" className="postCardMedia">
-        <Image alt="Media" src={postDetails.img} width={470} height={585} />
+      <div
+        id="postCardMedia"
+        className="flex items-center postCardMedia w-[470px] h-[585px]"
+      >
+        <img
+          alt="Media"
+          src={`http://localhost:3000/${postDetails._id}.${
+            postDetails.img.split(".")[
+              postDetails.img.split(".")?.length - 1 || 0
+            ]
+          }`}
+        />
       </div>
       <PostActionsBar
         liked={liked}
@@ -75,6 +85,7 @@ export const PostCard = (props: PostCardProps) => {
           fetchComments();
         }}
       />
+      -1
       <div className="flex flex-col gap-2 postCardInfo">
         <span>{`${likesCount} likes`}</span>
         <span>
