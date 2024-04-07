@@ -7,6 +7,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const fs = require("fs");
 
 const { authRouter } = require("../server-express/routes/auth.routes");
 const { checkAuth } = require("../server-express/controllers/auth.controller");
@@ -41,6 +42,13 @@ function connectToDB(cb) {
 app
   .prepare()
   .then(() => {
+    try {
+      if (!fs.existsSync("./images")) {
+        fs.mkdirSync("./images");
+      }
+    } catch (err) {
+      console.log("Failed to create images directory", err);
+    }
     connectToDB(() => {
       const server = express();
 
