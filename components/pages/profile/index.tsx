@@ -3,19 +3,23 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { tabOptions } from "../../../constants/profileTabOptions";
-import { userLoginInfo } from "../../../redux/reducers/AuthReducer";
+import {
+  UserLoginInfo,
+  userLoginInfo,
+} from "../../../redux/reducers/AuthReducer";
 import { Loader } from "../../shared/loaders/clipLoader";
 import { ProfileService, UserProfile } from "../../../services/ProfileServices";
 
 interface ProfileProps {
   username: string;
+  userProfileInfo: UserProfile | null;
 }
 export const Profile = (props: ProfileProps) => {
-  const { username } = props;
+  const { username, userProfileInfo } = props;
   const userInfo = useSelector(userLoginInfo);
   const router = useRouter();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(
-    userInfo?.username === username ? userInfo : null
+    userProfileInfo
   );
   const [activeTab, setActiveTab] = useState<string>("posts");
   const [isUpdating, setIsUpdating] = useState<boolean>(false);

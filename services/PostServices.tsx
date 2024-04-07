@@ -20,7 +20,7 @@ export const PostServices = {
   fetchPosts(skip: number = 0) {
     return axiosInstance.get("/api/posts", { params: { skip: skip } });
   },
-  createPost(payload: CreatePostPayload) {
+  createPost(payload: FormData) {
     return axiosInstance.post("/api/posts", payload);
   },
   updatePostLikes(payload: UpdatePostLikes) {

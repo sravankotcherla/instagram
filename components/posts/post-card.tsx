@@ -66,11 +66,11 @@ export const PostCard = (props: PostCardProps) => {
       </div>
       <div
         id="postCardMedia"
-        className="flex items-center postCardMedia w-[470px] h-[585px]"
+        className="flex items-center justify-center postCardMedia w-[470px] h-[585px]"
       >
         <img
           alt="Media"
-          src={`http://localhost:3000/${postDetails._id}.${
+          src={`/${postDetails._id}.${
             postDetails.img.split(".")[
               postDetails.img.split(".")?.length - 1 || 0
             ]

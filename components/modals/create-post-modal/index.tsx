@@ -17,7 +17,7 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
 
   const userInfo = useSelector(userLoginInfo);
   const [postImg, setPostImg] = useState<string | null>(null);
-  const [imgFile, setImgFile] = useState<File | null>(null); // [file, setFile
+  const [imgFile, setImgFile] = useState<File | null>(null);
   const [caption, setCaption] = useState<string>("");
 
   const dispatch = useDispatch();
@@ -29,14 +29,13 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
     dispatch(CreatePostActions.setPostModalOpen(false));
   };
   const handleSharePost = async () => {
-    const postData = new FormData();
-    postData.append("postImg", imgFile);
-    postData.append("content", caption);
-    postData.append("tags", []);
-    debugger;
-
-    const resp = await PostServices.createPost(postData);
-    handleCloseModal();
+    if (imgFile) {
+      const postData = new FormData();
+      postData.append("postImg", imgFile);
+      postData.append("content", caption);
+      const resp = await PostServices.createPost(postData);
+      handleCloseModal();
+    }
   };
   return (
     <Modal

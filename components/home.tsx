@@ -30,6 +30,7 @@ export interface HomeProps {
 export const HomePosts = (props: HomeProps) => {
   const { posts } = props;
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [postsList, setPostsList] = useState<PostDetails[]>(posts || []);
 
   const [commentDetails, setCommentDetails] = useState<Array<Comment> | null>(
@@ -51,6 +52,9 @@ export const HomePosts = (props: HomeProps) => {
         setIsScrollLoading(false);
         if (resp.data?.length < 5) {
           setAtEnd(true);
+        }
+        if (isLoading) {
+          setIsLoading(false);
         }
       })
       .catch((err) => {
@@ -89,7 +93,7 @@ export const HomePosts = (props: HomeProps) => {
     });
   }, [postsList]);
 
-  if (!postsList?.length) {
+  if (isLoading) {
     return <Loader />;
   }
 
