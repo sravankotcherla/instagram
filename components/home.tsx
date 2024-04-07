@@ -33,9 +33,6 @@ export const HomePosts = (props: HomeProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [postsList, setPostsList] = useState<PostDetails[]>(posts || []);
 
-  const [commentDetails, setCommentDetails] = useState<Array<Comment> | null>(
-    null
-  );
   const [postCommentDetails, setpostCommentDetails] =
     useState<PostDetails | null>(null);
 
@@ -84,7 +81,6 @@ export const HomePosts = (props: HomeProps) => {
         <PostCard
           key={postItem._id}
           postDetails={postItem}
-          setCommentsDetails={setCommentDetails}
           setCommentPostDetails={setpostCommentDetails}
         />
       );
@@ -109,13 +105,11 @@ export const HomePosts = (props: HomeProps) => {
       {atEnd && (
         <div className="text-white text-center my-8">No more posts to show</div>
       )}
-      {postCommentDetails && commentDetails && (
+      {postCommentDetails && (
         <PostCommentsModal
           isOpen={postCommentDetails !== null}
           postDetails={postCommentDetails}
-          commentsList={commentDetails}
-          setCommentPostDetails={setpostCommentDetails}
-          setCommentsDetails={setCommentDetails}
+          setPostDetails={setpostCommentDetails}
         />
       )}
     </div>

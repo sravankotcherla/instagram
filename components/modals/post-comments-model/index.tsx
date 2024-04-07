@@ -18,22 +18,13 @@ import clsx from "clsx";
 interface PostCommentsModalProps {
   postDetails: PostDetails;
   isOpen: boolean;
-  commentsList: Comment[] | null;
-  setCommentPostDetails: Dispatch<SetStateAction<PostDetails | null>>;
-  setCommentsDetails: Dispatch<SetStateAction<Comment[] | null>>;
+  setPostDetails: Dispatch<SetStateAction<PostDetails | null>>;
 }
 
 export const PostCommentsModal = (props: PostCommentsModalProps) => {
-  const {
-    isOpen,
-    postDetails,
-    commentsList,
-    setCommentPostDetails,
-    setCommentsDetails,
-  } = props;
+  const { isOpen, postDetails, setPostDetails } = props;
 
   const [openModal, setOpenModal] = useState<boolean>(isOpen);
-  const [comments, setComments] = useState<Comment[] | null>(commentsList);
   const [replyInfo, setReplyInfo] = useState<ReplyCommentInfo | null>(null);
   const [updating, setUpdating] = useState<boolean>(false);
 
@@ -70,8 +61,7 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
       open={openModal}
       onClose={() => {
         setOpenModal(false);
-        setCommentPostDetails(null);
-        setCommentsDetails(null);
+        setPostDetails(null);
       }}
       maxWidth="lg"
       className="postModalDialog"
@@ -81,7 +71,12 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
         className={clsx("flex flex-row postModalContent p-0 bg-black m-0")}
       >
         <div className="postModalMedia flex items-center justify-center">
-          <img alt="Media" src={postDetails.img} />
+          <img
+            alt="Media"
+            src={`/${postDetails._id}.${
+              postDetails.img.split(".").slice(-1)[0]
+            }`}
+          />
         </div>
         <div className="flex flex-col postModalComments h-full">
           <div
@@ -92,11 +87,11 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
               width={32}
               height={32}
               alt="Content"
-              src={postDetails.userInfo[0].profileImg}
+              src={postDetails.userInfo?.[0]?.profileImg}
               className="userDp"
             />
             <span className="font-semibold  ml-2">
-              {postDetails.userInfo[0].username}
+              {postDetails.userInfo?.[0]?.username}
             </span>
           </div>
           {renderComments}
@@ -122,8 +117,8 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
       </DialogContent>
       <span
         onClick={() => {
-          setCommentPostDetails(null);
-          setCommentsDetails(null);
+          setOpenModal(false);
+          setPostDetails(null);
         }}
         className="absolute right-6 top-6 cursor-pointer"
       >

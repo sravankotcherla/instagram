@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const Likes = require("../models/postLikeMap.model");
 const { Comment } = require("../models/comments.model");
 const fs = require("fs");
+const { hostMedia } = require("./uploadMedia.controller");
+const { Follow } = require("../models/follow.model");
 
 exports.createPost = async (req, res) => {
   try {
@@ -12,7 +14,7 @@ exports.createPost = async (req, res) => {
     const newPost = await Post.create({
       content,
       img: req.file.filename,
-      tags: tags.length ? tags.split(",") : [],
+      tags: tags?.length ? tags.split(",") : [],
       createdBy: req.user._id,
     });
     res.status(200).jsonp(newPost);
@@ -27,19 +29,25 @@ exports.fetchPosts = async (req, res) => {
   async.waterfall(
     [
       function (done) {
-        User.findOne({ _id: req.user._id }, { followers: 1 })
+        Follow.find(
+          { srcObjectId: req.user._id, archived: false },
+          { destObjectId: 1 }
+        )
           .lean()
-          .then((userData) => {
-            return done(null, userData.followers);
+          .then((followMaps) => {
+            const following = followMaps.map(
+              ({ destObjectId }) => new mongoose.Types.ObjectId(destObjectId)
+            );
+            return done(null, following);
           })
           .catch((err) => {
             done(err);
           });
       },
-      function (followers, done) {
-        followers = [];
+      function (following, done) {
         Post.aggregate([
-          { $match: { createdBy: { $in: [...followers, req.user._id] } } },
+          { $match: { createdBy: { $in: [...following, req.user._id] } } },
+          { $sort: { createdAt: -1 } },
           { $skip: skipNumber },
           { $limit: 5 },
           {
@@ -87,41 +95,13 @@ exports.fetchPosts = async (req, res) => {
             img,
           };
         });
-        async.concat(
-          imagesData,
-          (imgData, cb) => {
-            try {
-              const writeStream = fs.createWriteStream(
-                `./images/${imgData.name}`
-              );
-              var db = mongoose.connections[0].db;
-              const gridFsBucket = new mongoose.mongo.GridFSBucket(db, {
-                bucketName: "media",
-              });
-              gridFsBucket
-                .openDownloadStreamByName(imgData.img)
-                .pipe(writeStream);
-              writeStream.on("finish", () => {
-                console.log("Image downloaded successfully");
-                return cb(null, imgData);
-              });
-              writeStream.on("error", (err) => {
-                console.log("Failed to write image", err);
-                return cb(err);
-              });
-            } catch (err) {
-              console.log("Failed to download image");
-              return cb(err);
-            }
-          },
-          function (err, results) {
-            if (err) {
-              return done(err);
-            } else {
-              return done(null, postsData);
-            }
+        hostMedia(imagesData, function (err, results) {
+          if (err) {
+            return done(err);
+          } else {
+            return done(null, postsData);
           }
-        );
+        });
       },
     ],
     function (err, results) {

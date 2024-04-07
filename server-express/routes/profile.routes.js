@@ -9,4 +9,6 @@ app
 
 app.put("/follow", ProfileController.followUser);
 
+app.get("/posts", ProfileController.getPosts);
+
 module.exports = { profileRouter: app };

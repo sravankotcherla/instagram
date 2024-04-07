@@ -322,4 +322,35 @@
     color: #0095f6;
     cursor: pointer;
   }
+  .profilePageContainer {
+    max-width: 927px;
+    width: 100%;
+    height: 100%;
+  }
+  .postsGallery {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(50px, 1fr));
+    gap: 4px;
+    grid-auto-rows: minmax(auto, 309px);
+    max-width: 927px;
+    margin-bottom: 20px;
+  }
+  .postsGalleryItem {
+    aspect-ratio: 1;
+    overflow: clip;
+    cursor: pointer;
+  }
+  .postsGalleryImg {
+    width: 100%;
+    height: 100%;
+  }
+  .profileFooter {
+    width: 100%;
+    min-height: 30px;
+    padding: 16px;
+  }
+  .postMediaContainer {
+    max-width: 470px;
+    max-height: 585px;
+  }
 }

@@ -1,5 +1,6 @@
 import { AxiosResponse } from "axios";
 import { axiosInstance } from "./PostServices";
+import { ProfileTab } from "../constants/profileTabOptions";
 
 export interface UserProfile {
   _id: string;
@@ -37,9 +38,21 @@ const getProfile = async (username: string) => {
 const follow = async (userId: string, following: boolean) => {
   return axiosInstance.put("/api/profile/follow", { userId, following });
 };
+
+const getPosts = async (
+  skipNumber: number,
+  type: ProfileTab,
+  userId: string
+) => {
+  return axiosInstance.get("/api/profile/posts", {
+    params: { skipNumber, type, userId },
+  });
+};
+
 export const ProfileService = {
   UpdateProfile,
   searchProfile,
   getProfile,
   follow,
+  getPosts,
 };
