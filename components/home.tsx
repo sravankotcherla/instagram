@@ -46,7 +46,6 @@ export const HomePosts = (props: HomeProps) => {
   const fetchPosts = () => {
     PostServices.fetchPosts(skipNumber)
       .then((resp) => {
-        debugger;
         setPostsList((prev) => [...prev, ...resp.data]);
         setSkipNumber((prev) => prev + resp.data?.length || 0);
         setIsScrollLoading(false);
@@ -80,7 +79,6 @@ export const HomePosts = (props: HomeProps) => {
   };
 
   const renderPosts = useMemo(() => {
-    debugger;
     return postsList.map((postItem) => {
       return (
         <PostCard

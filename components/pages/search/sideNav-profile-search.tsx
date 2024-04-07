@@ -82,7 +82,6 @@ const SideNavProfileSearch = (props: any) => {
             ) : (
               <div>
                 {searchResults?.map((result) => {
-                  debugger;
                   return (
                     <div
                       key={result.username}

@@ -12,34 +12,33 @@ import { ProfileService, UserProfile } from "../../../services/ProfileServices";
 
 interface ProfileProps {
   username: string;
-  userProfileInfo: UserProfile | null;
 }
 export const Profile = (props: ProfileProps) => {
-  const { username, userProfileInfo } = props;
+  const { username } = props;
   const userInfo = useSelector(userLoginInfo);
   const router = useRouter();
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(
-    userProfileInfo
-  );
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [activeTab, setActiveTab] = useState<string>("posts");
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!userProfile) {
-      ProfileService.getProfile(username)
-        .then((resp) => {
-          debugger;
-          setUserProfile(resp.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    if (!userProfile || userProfile?.username !== username) {
+      if (userInfo?.username === username) {
+        setUserProfile(userInfo);
+      } else {
+        ProfileService.getProfile(username)
+          .then((resp) => {
+            setUserProfile(resp.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     }
-  }, [userProfile]);
+  }, [username]);
 
   const handleFollowUnFollow = () => {
     setIsUpdating(true);
-    debugger;
     if (userProfile) {
       ProfileService.follow(userProfile._id, !userProfile.isFollowed)
         .then((resp) => {

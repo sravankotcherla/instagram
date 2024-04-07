@@ -7,13 +7,8 @@ import { userLoginInfo } from "../../../redux/reducers/AuthReducer";
 const ProfilePage = authenticator(() => {
   const router = useRouter();
   const username = (router.query?.username as string) || "";
-  const userInfo = useSelector(userLoginInfo);
-  return (
-    <Profile
-      username={username}
-      userProfileInfo={userInfo?.username === username ? userInfo : null}
-    />
-  );
+
+  return <Profile username={username} />;
 });
 
 export default ProfilePage;
