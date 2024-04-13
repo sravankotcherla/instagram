@@ -5,9 +5,6 @@ const postSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  img: {
-    type: String,
-  },
   tags: [
     {
       type: mongoose.SchemaTypes.ObjectId,
@@ -24,6 +21,18 @@ const postSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  media: [
+    {
+      fileName: {
+        type: String,
+        required: true,
+      },
+      type: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 const Post = new mongoose.model("Post", postSchema) || mongoose.models.posts;

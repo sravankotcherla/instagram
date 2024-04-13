@@ -8,6 +8,8 @@ import { clsx } from "clsx";
 import { LeftArrowIcon } from "../../../icons/left-arrow-icon";
 import { CrossIcon } from "../../../icons/cross-icon";
 import { PostServices } from "../../../services/PostServices";
+import { MediaCarousel } from "../../media/carousel";
+import { UpdateLoader } from "../../shared/loaders/update-loader";
 
 interface CreatePostModalProps {
   open: boolean;
@@ -16,31 +18,42 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
   const { open } = props;
 
   const userInfo = useSelector(userLoginInfo);
-  const [postImg, setPostImg] = useState<string | null>(null);
-  const [imgFile, setImgFile] = useState<File | null>(null);
+  const [postImg, setPostImg] = useState<string[] | null>(null);
+  const [imgFiles, setImgFiles] = useState<FileList | null>(null);
   const [caption, setCaption] = useState<string>("");
+  const [showLoader, setShowLoader] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
   const handleCloseModal = () => {
     setPostImg(null);
-    setImgFile(null);
+    setImgFiles(null);
     setCaption("");
     dispatch(CreatePostActions.setPostModalOpen(false));
   };
   const handleSharePost = async () => {
-    if (imgFile) {
-      const postData = new FormData();
-      postData.append("postImg", imgFile);
-      postData.append("content", caption);
-      const resp = await PostServices.createPost(postData);
-      handleCloseModal();
+    try {
+      if (imgFiles) {
+        setShowLoader(true);
+        const resp = await PostServices.createPost({
+          content: caption,
+          media: imgFiles,
+        });
+        setShowLoader(false);
+        handleCloseModal();
+      }
+    } catch (err) {
+      console.log(err);
+      setShowLoader(false);
     }
   };
   return (
     <Modal
       open={open}
       onClose={() => {
+        setPostImg(null);
+        setImgFiles(null);
+        setCaption("");
         dispatch(CreatePostActions.setPostModalOpen(false));
       }}
       className="flex items-center justify-center"
@@ -72,7 +85,14 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
           )}
         >
           {postImg ? (
-            <Image src={postImg} width={560} height={560} alt="postImg" />
+            <div className="createPostModalMediaWrapper">
+              <MediaCarousel
+                media={postImg.map((item) => ({
+                  fileName: item,
+                  type: "image",
+                }))}
+              />
+            </div>
           ) : (
             <div className="secondaryButton">
               <form encType="multipart/form-data">
@@ -85,18 +105,29 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
                   className="hidden"
                   name="postImg"
                   onChange={(event) => {
-                    const img = event?.currentTarget?.files?.[0];
-                    if (img) {
-                      setImgFile(img);
-                      const fileReader = new FileReader();
-                      fileReader.readAsDataURL(img);
-                      fileReader.onload = async (event) => {
-                        const imgUrl =
-                          event?.target?.result?.toString() || null;
-                        setPostImg(imgUrl);
-                      };
+                    const imgs = event?.currentTarget?.files;
+                    if (imgs) {
+                      setImgFiles(imgs);
+                      Object.keys(imgs).forEach((index) => {
+                        const fileReader = new FileReader();
+                        fileReader.readAsDataURL(imgs[parseInt(index)]);
+                        fileReader.onload = async (event) => {
+                          const imgUrl =
+                            event?.target?.result?.toString() || null;
+                          if (imgUrl) {
+                            setPostImg((prev) => {
+                              if (!prev) {
+                                prev = [];
+                              }
+                              prev[parseInt(index)] = imgUrl;
+                              return prev;
+                            });
+                          }
+                        };
+                      });
                     }
                   }}
+                  multiple={true}
                 />
               </form>
             </div>
@@ -130,6 +161,7 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
             </div>
           )}
         </div>
+        {showLoader && <UpdateLoader radius={25} />}
       </div>
     </Modal>
   );

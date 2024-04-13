@@ -45,7 +45,6 @@ export const Profile = (props: ProfileProps) => {
   useEffect(() => {
     if (userProfile) {
       setPosts(null);
-      debugger;
       fetchPosts();
     }
   }, [activeTab, userProfile]);

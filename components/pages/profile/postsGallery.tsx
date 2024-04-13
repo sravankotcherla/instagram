@@ -31,7 +31,7 @@ export const PostsGallery = (props: PostsGalleryProps) => {
             }}
           >
             <img
-              src={`/${post._id}.${post.img.split(".").slice(-1)[0]}`}
+              src={`/${post.media[0].fileName}`}
               alt="media"
               className="postsGalleryImg"
             />

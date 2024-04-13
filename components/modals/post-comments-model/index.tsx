@@ -14,6 +14,7 @@ import {
 import { CommentsList } from "./comments-list";
 import { UpdateLoader } from "../../shared/loaders/update-loader";
 import clsx from "clsx";
+import { MediaCarousel } from "../../media/carousel";
 
 interface PostCommentsModalProps {
   postDetails: PostDetails;
@@ -71,12 +72,7 @@ export const PostCommentsModal = (props: PostCommentsModalProps) => {
         className={clsx("flex flex-row postModalContent p-0 bg-black m-0")}
       >
         <div className="postModalMedia flex items-center justify-center">
-          <img
-            alt="Media"
-            src={`/${postDetails._id}.${
-              postDetails.img.split(".").slice(-1)[0]
-            }`}
-          />
+          <MediaCarousel media={postDetails.media} />
         </div>
         <div className="flex flex-col postModalComments h-full">
           <div

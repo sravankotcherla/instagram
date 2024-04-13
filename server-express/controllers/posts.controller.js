@@ -10,16 +10,20 @@ const { Follow } = require("../models/follow.model");
 
 exports.createPost = async (req, res) => {
   try {
-    const { content, img, tags } = req.body;
+    const { content, tags } = req.body;
+    const mediaContent = req.files.map((file) => {
+      const mediaType = file.mimetype.split("/")[0];
+      return { fileName: file.filename, type: mediaType };
+    });
     const newPost = await Post.create({
       content,
-      img: req.file.filename,
+      media: mediaContent,
       tags: tags?.length ? tags.split(",") : [],
       createdBy: req.user._id,
     });
     res.status(200).jsonp(newPost);
   } catch (err) {
-    console.log("Failed to create post");
+    console.log("Failed to create post \n", err);
     res.status(400).jsonp({ message: "Failed to create post", error: err });
   }
 };
@@ -88,13 +92,15 @@ exports.fetchPosts = async (req, res) => {
           });
       },
       function (postsData, done) {
-        const imagesData = postsData.map(({ _id, img }) => {
-          const splitImgName = img.split(".");
-          return {
-            name: _id + "." + splitImgName[splitImgName.length - 1],
-            img,
-          };
-        });
+        const imagesData = postsData.reduce((accum, { media }) => {
+          const mediaData = Object.keys(media).map((index) => {
+            return {
+              name: media[parseInt(index)].fileName,
+              img: media[parseInt(index)].fileName,
+            };
+          });
+          return [...accum, ...mediaData];
+        }, []);
         hostMedia(imagesData, function (err, results) {
           if (err) {
             return done(err);

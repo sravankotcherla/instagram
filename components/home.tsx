@@ -11,11 +11,14 @@ export interface PostDetails {
   createdBy: string;
   createdAt: string;
   content: string;
-  img: string;
   tags: string[];
   likes: number;
   userInfo: UserLoginInfo[];
   isLiked: [LikesMap];
+  media: {
+    fileName: string;
+    type: string;
+  }[];
 }
 
 export interface LikesMap {

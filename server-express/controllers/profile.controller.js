@@ -216,11 +216,15 @@ exports.getPosts = (req, res) => {
             });
         },
         function (posts, done) {
-          const imgs = posts.map((post) => {
-            const imgFileName =
-              post._id + "." + post.img.split(".").slice(-1)[0];
-            return { name: imgFileName, img: post.img };
-          });
+          const imgs = posts.reduce((accum, { media }) => {
+            const mediaData = Object.keys(media).map((index) => {
+              return {
+                name: media[parseInt(index)].fileName,
+                img: media[parseInt(index)].fileName,
+              };
+            });
+            return [...accum, ...mediaData];
+          }, []);
           hostMedia(imgs, function (err, results) {
             if (err) {
               return done(err);

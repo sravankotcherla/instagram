@@ -52,8 +52,8 @@ app
     connectToDB(() => {
       const server = express();
 
-      server.use(bodyParser.json({ limit: "100mb" })); // for parsing application/json
-      server.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
+      server.use(bodyParser.json()); // for parsing application/json
+      server.use(bodyParser.urlencoded({ extended: true }));
       server.use(cookieParser());
 
       server.use(express.static("images"));

@@ -1,13 +1,11 @@
-import { IconButton } from "@mui/material";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useState } from "react";
 import { getCreatedAgo } from "../../helpers/posts";
-import { CommentIcon } from "../../icons/comment-icon";
-import { Comment } from "../../services/CommentServices";
 
 import { PostServices } from "../../services/PostServices";
 import { PostDetails } from "../home";
 import { PostActionsBar } from "./post-actions-bar";
+import { MediaPlayer } from "./media";
 
 interface PostCardProps {
   postDetails: PostDetails;
@@ -51,20 +49,7 @@ export const PostCard = (props: PostCardProps) => {
           {getCreatedAgo(postDetails.createdAt)}
         </span>
       </div>
-      <div
-        id="postCardMedia"
-        className="flex items-center justify-center postCardMedia w-[470px] h-[585px]"
-      >
-        <img
-          alt="Media"
-          src={`/${postDetails._id}.${
-            postDetails.img.split(".")[
-              postDetails.img.split(".")?.length - 1 || 0
-            ]
-          }`}
-          className="postMediaContainer"
-        />
-      </div>
+      <MediaPlayer postData={postDetails} />
       <PostActionsBar
         liked={liked}
         onLike={handleOnLike}
