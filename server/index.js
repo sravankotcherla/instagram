@@ -17,6 +17,7 @@ const {
   commentRouter,
 } = require("../server-express/routes/comments.routes.js");
 const { searchRouter } = require("../server-express/routes/search.routes");
+const { clearMediaCacheJob } = require("../server-express/cron-jobs/media.js");
 
 let gridFsBucket;
 
@@ -43,9 +44,13 @@ app
   .prepare()
   .then(() => {
     try {
+      // making images cache for hosting post images
       if (!fs.existsSync("./images")) {
         fs.mkdirSync("./images");
       }
+
+      //initiate cron jobs
+      clearMediaCacheJob.start();
     } catch (err) {
       console.log("Failed to create images directory", err);
     }
@@ -59,6 +64,39 @@ app
       server.use(express.static("images"));
 
       server.use("/auth", authRouter);
+
+      server.get("/api/video", (req, res) => {
+        const range = req.headers.range;
+        if (!range) {
+          return res.status(400).send("Missing range in request");
+        }
+
+        const videoSize = fs.statSync("./vid.mov").size;
+
+        // Parse Range
+        // Example: "bytes=32324-"
+        const CHUNK_SIZE = 10 ** 6; // 1MB
+        const start = Number(range.replace(/\D/g, ""));
+        const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+
+        // Create headers
+        const contentLength = end - start + 1;
+        const headers = {
+          "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+          "Accept-Ranges": "bytes",
+          "Content-Length": contentLength,
+          "Content-Type": "video/mp4",
+        };
+
+        // HTTP Status 206 for Partial Content
+        res.writeHead(206, headers);
+
+        // create video read stream for this particular chunk
+        const videoStream = fs.createReadStream("./vid.mov", { start, end });
+
+        // Stream the video chunk to the client
+        videoStream.pipe(res);
+      });
 
       server.use("/api", checkAuth);
       server.use("/api/profile", profileRouter);
