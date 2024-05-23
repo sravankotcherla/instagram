@@ -114,8 +114,16 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
                     const imgs = event?.currentTarget?.files;
                     if (imgs) {
                       setImgFiles(imgs);
-                      const fileReaders = Object.keys(imgs).map((index) => {
-                        const reader = new Promise((resolve, reject) => {
+                      const fileReaders: Array<
+                        Promise<{
+                          url: string;
+                          type: string;
+                        }>
+                      > = Object.keys(imgs).map((index) => {
+                        const reader: Promise<{
+                          url: string;
+                          type: string;
+                        }> = new Promise((resolve, reject) => {
                           const fileReader = new FileReader();
                           const mediaType =
                             imgs[parseInt(index)].type.split("/")[0];
