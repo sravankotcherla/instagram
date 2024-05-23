@@ -14,17 +14,15 @@ export const MediaCarousel = (props: MediaCarouselProps) => {
       showThumbs={false}
       className="carouselMain"
     >
-      {media.map((item: { fileName: string; type: string }) => {
+      {media.map((item: { fileName: string; type: string }, index) => {
         return item.type === "image" ? (
-          <div key={item.fileName} className="carouselItem">
-            <img
-              src={`/${item.fileName}`}
-              className="carouselImg"
-              alt="postImg"
-            />
+          <div key={index} className="carouselItem">
+            <img src={item.fileName} className="carouselImg" alt="postImg" />
           </div>
         ) : (
-          <img src={item.fileName} width={560} height={560} alt="video" />
+          <div key={index} className="carouselItem">
+            <video width={500} height={300} src={item.fileName} controls />
+          </div>
         );
       })}
     </Carousel>

@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
+require("dotenv").config({ path: "./.env" });
 
 const storage = new GridFsStorage({
-  url:
-    process.env.MONGO_URI ||
-    "mongodb+srv://sravan:sravan@cluster0.wefff7s.mongodb.net/?retryWrites=true&w=majority",
+  url: `${process.env.MONGO_URI}`,
+  options: { useNewUrlParser: true, useUnifiedTopology: true },
   file: (req, file) => {
     return {
       bucketName: "media",

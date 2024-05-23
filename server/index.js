@@ -8,7 +8,7 @@ const handle = app.getRequestHandler();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
-
+require("dotenv").config({ path: "./.env" });
 const { authRouter } = require("../server-express/routes/auth.routes");
 const { checkAuth } = require("../server-express/controllers/auth.controller");
 const { profileRouter } = require("../server-express/routes/profile.routes");
@@ -23,7 +23,10 @@ let gridFsBucket;
 
 function connectToDB(cb) {
   mongoose
-    .connect(process.env.MONGO_URI)
+    .connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
     .then(() => {
       console.log("Connected to DB successfully");
       cb();
