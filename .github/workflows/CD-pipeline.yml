@@ -27,4 +27,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: satyakotcherla/instaClone:latest
+          tags: satyakotcherla/instaCloneDev:latest
