@@ -1,36 +1,22 @@
-import { IconButton } from "@mui/material";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useState } from "react";
 import { getCreatedAgo } from "../../helpers/posts";
-import { CommentIcon } from "../../icons/comment-icon";
-import { Comment, CommentServices } from "../../services/CommentServices";
 
 import { PostServices } from "../../services/PostServices";
 import { PostDetails } from "../home";
 import { PostActionsBar } from "./post-actions-bar";
+import { MediaPlayer } from "./media";
 
 interface PostCardProps {
   postDetails: PostDetails;
   setCommentPostDetails: Dispatch<SetStateAction<PostDetails | null>>;
-  setCommentsDetails: Dispatch<SetStateAction<Comment[] | null>>;
 }
 
 export const PostCard = (props: PostCardProps) => {
-  const { postDetails, setCommentPostDetails, setCommentsDetails } = props;
+  const { postDetails, setCommentPostDetails } = props;
 
   const [liked, setLiked] = useState<boolean>(postDetails?.isLiked?.length > 0);
   const [likesCount, setLikesCount] = useState<number>(postDetails?.likes || 0);
-
-  const fetchComments = () => {
-    CommentServices.fetchComments(postDetails._id)
-      .then((resp) => {
-        const commentsList = resp.data;
-        setCommentsDetails(commentsList);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   const handleOnLike = () => {
     setLiked((prev) => !prev);
@@ -63,19 +49,16 @@ export const PostCard = (props: PostCardProps) => {
           {getCreatedAgo(postDetails.createdAt)}
         </span>
       </div>
-      <div id="postCardMedia" className="postCardMedia">
-        <Image alt="Media" src={postDetails.img} width={470} height={585} />
-      </div>
+      <MediaPlayer postData={postDetails} />
       <PostActionsBar
         liked={liked}
         onLike={handleOnLike}
         onComment={() => {
           setCommentPostDetails(postDetails);
-          fetchComments();
         }}
       />
       <div className="flex flex-col gap-2 postCardInfo">
-        <span>{`${likesCount} likes`}</span>
+        <span>{`${likesCount} ${likesCount <= 1 ? "like" : "likes"}`}</span>
         <span>
           <strong>{postDetails.userInfo[0].username} </strong>{" "}
           {postDetails.content}

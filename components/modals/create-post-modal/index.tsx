@@ -8,6 +8,8 @@ import { clsx } from "clsx";
 import { LeftArrowIcon } from "../../../icons/left-arrow-icon";
 import { CrossIcon } from "../../../icons/cross-icon";
 import { PostServices } from "../../../services/PostServices";
+import { MediaCarousel } from "../../media/carousel";
+import { UpdateLoader } from "../../shared/loaders/update-loader";
 
 interface CreatePostModalProps {
   open: boolean;
@@ -16,28 +18,48 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
   const { open } = props;
 
   const userInfo = useSelector(userLoginInfo);
-  const [postImg, setPostImg] = useState<string | null>(null);
+  const [uploadedMedia, setUploadedMedia] = useState<
+    | {
+        url: string;
+        type: string;
+      }[]
+    | null
+  >(null);
+  const [imgFiles, setImgFiles] = useState<FileList | null>(null);
   const [caption, setCaption] = useState<string>("");
+  const [showLoader, setShowLoader] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
   const handleCloseModal = () => {
+    setUploadedMedia(null);
+    setImgFiles(null);
+    setCaption("");
     dispatch(CreatePostActions.setPostModalOpen(false));
   };
   const handleSharePost = async () => {
-    if (postImg?.length) {
-      const resp = await PostServices.createPost({
-        img: postImg,
-        content: "",
-        tags: [],
-      });
-      handleCloseModal();
+    try {
+      if (imgFiles) {
+        setShowLoader(true);
+        const resp = await PostServices.createPost({
+          content: caption,
+          media: imgFiles,
+        });
+        setShowLoader(false);
+        handleCloseModal();
+      }
+    } catch (err) {
+      console.log(err);
+      setShowLoader(false);
     }
   };
   return (
     <Modal
       open={open}
       onClose={() => {
+        setUploadedMedia(null);
+        setImgFiles(null);
+        setCaption("");
         dispatch(CreatePostActions.setPostModalOpen(false));
       }}
       className="flex items-center justify-center"
@@ -52,11 +74,11 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
           <CrossIcon width={28} height={28} customColor="white" />
         </span>
         <div className="flex items-center justify-between postModalHeading px-4">
-          {postImg && (
+          {uploadedMedia && (
             <LeftArrowIcon width={20} height={20} customColor="white" />
           )}
           <span>Create new post</span>
-          {postImg && (
+          {uploadedMedia && (
             <span className="cursor-pointer" onClick={handleSharePost}>
               Share
             </span>
@@ -65,35 +87,82 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
         <div
           className={clsx(
             "flex flex-row items-center justify-center postModalDescription",
-            { ["w-[560px]"]: postImg === null }
+            { ["w-[560px]"]: uploadedMedia === null }
           )}
         >
-          {postImg ? (
-            <Image src={postImg} width={560} height={560} alt="postImg" />
-          ) : (
-            <div className="secondaryButton">
-              <label htmlFor="selectFromPc" className="cursor-pointer">
-                Select from computer
-              </label>
-              <input
-                id="selectFromPc"
-                type="file"
-                className="hidden"
-                onChange={(event) => {
-                  const img = event?.currentTarget?.files?.[0];
-                  if (img) {
-                    const fileReader = new FileReader();
-                    fileReader.readAsDataURL(img);
-                    fileReader.onload = async (event) => {
-                      const imgUrl = event?.target?.result?.toString() || null;
-                      setPostImg(imgUrl);
-                    };
-                  }
-                }}
+          {uploadedMedia ? (
+            <div className="createPostModalMediaWrapper">
+              <MediaCarousel
+                media={uploadedMedia.map((item) => ({
+                  fileName: item.url,
+                  type: item.type,
+                }))}
               />
             </div>
+          ) : (
+            <div className="secondaryButton">
+              <form encType="multipart/form-data">
+                <label htmlFor="selectFromPc" className="cursor-pointer">
+                  Select from computer
+                </label>
+                <input
+                  id="selectFromPc"
+                  type="file"
+                  className="hidden"
+                  name="postImg"
+                  onChange={(event) => {
+                    const imgs = event?.currentTarget?.files;
+                    if (imgs) {
+                      setImgFiles(imgs);
+                      const fileReaders: Array<
+                        Promise<{
+                          url: string;
+                          type: string;
+                        }>
+                      > = Object.keys(imgs).map((index) => {
+                        const reader: Promise<{
+                          url: string;
+                          type: string;
+                        }> = new Promise((resolve, reject) => {
+                          const fileReader = new FileReader();
+                          const mediaType =
+                            imgs[parseInt(index)].type.split("/")[0];
+                          fileReader.onload = async (event) => {
+                            const imgUrl =
+                              event?.target?.result?.toString() || null;
+                            if (imgUrl) {
+                              debugger;
+                              resolve({
+                                url: imgUrl,
+                                type: mediaType,
+                              });
+                            } else {
+                              reject({
+                                url: "",
+                                type: mediaType,
+                              });
+                            }
+                          };
+                          fileReader.readAsDataURL(imgs[parseInt(index)]);
+                        });
+                        return reader;
+                      });
+                      Promise.all(fileReaders)
+                        .then((data) => {
+                          debugger;
+                          setUploadedMedia(data);
+                        })
+                        .catch(() => {
+                          console.log("Error occured during reading files");
+                        });
+                    }
+                  }}
+                  multiple={true}
+                />
+              </form>
+            </div>
           )}
-          {postImg && (
+          {uploadedMedia && (
             <div className="h-full flex flex-col items-center justify-start postDetails">
               <div className="captionInput w-full">
                 <div className="flex items-center mb-4">
@@ -122,6 +191,7 @@ export const CreatePostModal = (props: CreatePostModalProps) => {
             </div>
           )}
         </div>
+        {showLoader && <UpdateLoader radius={25} />}
       </div>
     </Modal>
   );

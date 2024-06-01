@@ -27,9 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <GoogleOAuthProvider
         clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
       >
-        <Provider store={store}>
-          <MenuBarWrapper>{<Component {...pageProps} />}</MenuBarWrapper>
-        </Provider>
+        <Provider store={store}>{<Component {...pageProps} />}</Provider>
       </GoogleOAuthProvider>
     </main>
   );

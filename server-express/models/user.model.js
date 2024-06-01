@@ -44,6 +44,10 @@ const userSchema = new mongoose.Schema({
       ref: Post,
     },
   ],
+  following: {
+    type: Number,
+    default: 0,
+  },
   followers: {
     type: Number,
     default: 0,

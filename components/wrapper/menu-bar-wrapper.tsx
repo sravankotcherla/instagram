@@ -15,28 +15,15 @@ export const MenuBarWrapper = (props: any) => {
   const dispatch = useDispatch();
   const postModalInfo = useSelector(postModalSelector);
   const userSessionInfo = useSelector(userLoginInfo);
-  const modifiedBarOptions = barOptions.map((option) => {
-    option["onClick"] = () => {
-      if (option.route) {
-        router.push(
-          option.label === "Profile"
-            ? `${option.route}/${userSessionInfo?.username || ""}`
-            : option.route
-        );
-      } else {
-        dispatch(CreatePostActions.setPostModalOpen(true));
-      }
-    };
-    return option;
-  });
+
   return (
     <>
       <TopBar />
       <div className="flex flex-row w-full h-full overflow-hidden">
-        <SideBar options={modifiedBarOptions} />
+        <SideBar options={barOptions} />
         {props.children}
       </div>
-      <BottomBar options={modifiedBarOptions} />
+      <BottomBar options={barOptions} />
       <CreatePostModal open={postModalInfo?.isModalOpen} />
     </>
   );

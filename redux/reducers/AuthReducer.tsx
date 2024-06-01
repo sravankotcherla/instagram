@@ -3,6 +3,7 @@ import { ApplicationState } from "../store";
 import { SET_USER_LOGIN_INFO } from "../types/Auth.types";
 
 export interface UserLoginInfo {
+  _id: string;
   name: string;
   id: string;
   username: string;
@@ -10,6 +11,7 @@ export interface UserLoginInfo {
   email: string;
   bio: string;
   followers: number;
+  following: number;
   posts: any;
   gender?: GenderOption;
 }

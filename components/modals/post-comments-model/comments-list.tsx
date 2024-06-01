@@ -56,7 +56,7 @@ export const CommentsList = (props: CommentsListProps) => {
         ["grow overflow-auto commentsList"]: !parentComment,
       })}
     >
-      {comments?.length && !loading ? (
+      {!loading ? (
         comments.map((comment) => {
           return (
             <div key={comment._id}>

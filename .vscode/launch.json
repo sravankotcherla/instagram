@@ -8,6 +8,7 @@
       "type": "pwa-node",
       "request": "launch",
       "name": "Launch Dev Mode",
+      "runtimeExecutable": "nodemon",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/server/index.js"
     },

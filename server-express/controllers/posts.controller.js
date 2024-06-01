@@ -4,19 +4,26 @@ const { User } = require("../models/user.model");
 const mongoose = require("mongoose");
 const Likes = require("../models/postLikeMap.model");
 const { Comment } = require("../models/comments.model");
+const fs = require("fs");
+const { hostMedia } = require("./uploadMedia.controller");
+const { Follow } = require("../models/follow.model");
 
 exports.createPost = async (req, res) => {
   try {
-    const { content, img, tags } = req.body;
+    const { content, tags } = req.body;
+    const mediaContent = req.files.map((file) => {
+      const mediaType = file.mimetype.split("/")[0];
+      return { fileName: file.filename, type: mediaType };
+    });
     const newPost = await Post.create({
       content,
-      img,
-      tags,
+      media: mediaContent,
+      tags: tags?.length ? tags.split(",") : [],
       createdBy: req.user._id,
     });
-    return res.status(200).jsonp(newPost);
+    res.status(200).jsonp(newPost);
   } catch (err) {
-    console.log("Failed to create post");
+    console.log("Failed to create post \n", err);
     res.status(400).jsonp({ message: "Failed to create post", error: err });
   }
 };
@@ -26,19 +33,25 @@ exports.fetchPosts = async (req, res) => {
   async.waterfall(
     [
       function (done) {
-        User.findOne({ _id: req.user._id }, { followers: 1 })
+        Follow.find(
+          { srcObjectId: req.user._id, archived: false },
+          { destObjectId: 1 }
+        )
           .lean()
-          .then((userData) => {
-            return done(null, userData.followers);
+          .then((followMaps) => {
+            const following = followMaps.map(
+              ({ destObjectId }) => new mongoose.Types.ObjectId(destObjectId)
+            );
+            return done(null, following);
           })
           .catch((err) => {
             done(err);
           });
       },
-      function (followers, done) {
-        followers = [];
+      function (following, done) {
         Post.aggregate([
-          { $match: { createdBy: { $in: [...followers, req.user._id] } } },
+          { $match: { createdBy: { $in: [...following, req.user._id] } } },
+          { $sort: { createdAt: -1 } },
           { $skip: skipNumber },
           { $limit: 5 },
           {
@@ -77,6 +90,24 @@ exports.fetchPosts = async (req, res) => {
           .catch((err) => {
             return done(err);
           });
+      },
+      function (postsData, done) {
+        const imagesData = postsData.reduce((accum, { media }) => {
+          const mediaData = Object.keys(media).map((index) => {
+            return {
+              name: media[parseInt(index)].fileName,
+              img: media[parseInt(index)].fileName,
+            };
+          });
+          return [...accum, ...mediaData];
+        }, []);
+        hostMedia(imagesData, function (err, results) {
+          if (err) {
+            return done(err);
+          } else {
+            return done(null, postsData);
+          }
+        });
       },
     ],
     function (err, results) {
